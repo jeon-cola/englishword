@@ -1,11 +1,15 @@
 import { Routes, Route } from "react-router"
-import Home from "../feature/Home"
+import HomeRouter from "./HomeRouter"
+import NavBar from "../feature/NavBar"
 
 const PageRouter: React.FC = () => {
   return(
-    <Routes>
-      <Route path="/" element={<Home/>} />
-    </Routes>
+    <div>
+      < NavBar/>
+      <Routes>
+        <Route path="/" element={<HomeRouter/>} />
+      </Routes>
+    </div>
   )
 }
 

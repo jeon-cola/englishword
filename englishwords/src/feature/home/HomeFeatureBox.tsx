@@ -21,7 +21,8 @@ const HomeFeatureBox:React.FC<HomeFeatureBoxProps> = ({title,color, image}) => {
   }
   return (
     <div 
-      className={`bg-[${color}] w-[300px] h-[300px] p-2 rounded-xl hover:scale-[1.1] cursor-pointer transition-all duration-950 ease-in-out shadow-[0_4px_20px_0_rgba(0,0,0,0.30)]`}
+    style={{ backgroundColor:color}}
+      className="w-[300px] h-[300px] p-2 rounded-xl hover:scale-[1.1] cursor-pointer transition-all duration-950 ease-in-out shadow-[0_4px_20px_0_rgba(0,0,0,0.30)]"
       onClick={featureHandler}
     >
       <p className="text-[#374151] font-bold text-3xl">{title}</p>

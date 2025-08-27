@@ -4,6 +4,7 @@ import NavBar from "../feature/NavBar"
 import TestRouter from "./TestRouter"
 import WordRouter from "./WordRouter"
 import TemplateRouter from "./TemplateRouter"
+import Authentication from "./AuthenticationRouter"
 
 const PageRouter: React.FC = () => {
   return(
@@ -14,6 +15,7 @@ const PageRouter: React.FC = () => {
         <Route path="/test" element={<TestRouter/>} />
         <Route path="/word" element={<WordRouter/>} />
         <Route path="/template" element={<TemplateRouter/>} />
+        <Route path="/login" element={<Authentication/>} />
       </Routes>
     </div>
   )

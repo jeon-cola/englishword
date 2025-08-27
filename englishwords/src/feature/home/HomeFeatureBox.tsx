@@ -1,7 +1,7 @@
 import testImg from "../../componenets/test.png"
 import wordImg from "../../componenets/word.png"
 import templateImg from "../../componenets/template.png"
-import { Navigate, useNavigate } from "react-router"
+import { useNavigate } from "react-router"
 
 interface HomeFeatureBoxProps {
   title: string,

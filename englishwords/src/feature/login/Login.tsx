@@ -1,8 +1,25 @@
-import { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import purple from "../../componenets/purple.png"
 
 const Login: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(false)
+  const emailRef = useRef<HTMLInputElement>(null)
+  const passwordRef = useRef<HTMLInputElement>(null)
+
+  const signupEmailRef = useRef<HTMLInputElement>(null)
+  const signupPasswordRef = useRef<HTMLInputElement>(null)
+  const signupCheckPasswordRef = useRef<HTMLInputElement>(null)
+  const signupNicknameRef = useRef<HTMLInputElement>(null)
+  const yearRef = useRef<HTMLSelectElement>(null)
+  const monthRef = useRef<HTMLSelectElement>(null)
+  const dayRef = useRef<HTMLSelectElement>(null)
+
+  const loginHandler = (e : React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+  }
+  const signupHandler = (e : React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+  }
   return (
     <div className="flex h-screen">
       <img src={purple} alt="purple image" className="h-full w-[800px] object-cover"/>
@@ -29,6 +46,7 @@ const Login: React.FC = () => {
                 <div className="flex flex-col gap-2">
                   <p className="font-bold text-left text-2xl" >이메일</p>
                   <input 
+                    ref={emailRef}
                     type="text" 
                     placeholder="이메일 주소를 입력해주세요" 
                     className="text-xl p-3 border-2 rounded-xl focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
@@ -42,6 +60,7 @@ const Login: React.FC = () => {
                     <p className="text-[#00A6ED] cursor-pointer text-md">비밀번호 찾기</p>
                   </div>
                   <input 
+                    ref={passwordRef}
                     type="password" 
                     placeholder="비밀번호를 입력해주세요" 
                     className="text-xl p-3 border-2 rounded-xl focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
@@ -49,7 +68,10 @@ const Login: React.FC = () => {
                 </div>
 
                 <div className="flex justify-center"> 
-                  <button className="bg-[#D2A7F4] p-1 text-white w-[250px] h-[70px] rounded-xl text-3xl">로그인</button>
+                  <button 
+                    className="bg-[#D2A7F4] p-1 text-white w-[250px] h-[70px] rounded-xl text-3xl"
+                    onClick={loginHandler}
+                  >로그인</button>
                 </div>
               </form> 
         : <form className="flex flex-col gap-10 h-full">
@@ -62,21 +84,34 @@ const Login: React.FC = () => {
               <p className="font-bold text-2xl text-left">생년월일</p>
 
               <div className="flex gap-5">
-                <select id="year" name="year" className="border-2 rounded-xl  p-2 text-lg focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]">
+                <select 
+                  id="year" 
+                  name="year" 
+                  className="border-2 rounded-xl  p-2 text-lg focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
+                  ref={yearRef}
+                >
                   <option value="">년</option>
                   {Array.from({length: 156}, (_, i) => 2025 - i).map(year => (
                     <option key={year} value={year}>{year}년</option>
                   ))}
                 </select>
 
-                <select id="month" name="month" className="border-2 rounded-xl p-2 text-lg focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]">
+                <select 
+                  id="month" 
+                  name="month" 
+                  className="border-2 rounded-xl p-2 text-lg focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
+                  ref={monthRef}>
                   <option value="">월</option>
                   {Array.from({length: 12}, (_, i) => i +1).map(month => (
                     <option key={month} value={month}>{month}월</option>
                   ))}
                 </select>
 
-                <select id="day" name="day" className="border-2 rounded-xl p-2 text-lg focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]">
+                <select 
+                  id="day" 
+                  name="day" 
+                  className="border-2 rounded-xl p-2 text-lg focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
+                  ref={dayRef}>
                   <option value="">일</option>
                   {Array.from({length: 31}, (_, i) => i +1).map(day => (
                     <option key={day} value={day}>{day}일</option>
@@ -88,6 +123,7 @@ const Login: React.FC = () => {
             <div className="flex flex-col gap-2">
               <p className="font-bold text-2xl text-left">이메일</p>
               <input 
+                ref={signupEmailRef}
                 type="text"
                 placeholder="user@email.com"
                 className="text-xl p-3 border-2 rounded-xl focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
@@ -97,6 +133,7 @@ const Login: React.FC = () => {
             <div className="flex flex-col gap-2">
               <p className="font-bold text-2xl text-left">닉네임</p>
               <input 
+                ref={signupNicknameRef}
                 type="text" 
                 placeholder="json"
                 className="text-xl p-3 border-2 rounded-xl focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
@@ -106,6 +143,7 @@ const Login: React.FC = () => {
             <div className="flex flex-col gap-2">
               <p className="font-bold text-2xl text-left">비밀번호</p>
               <input 
+                ref={signupPasswordRef}
                 type="password"
                 placeholder="영문, 숫자, 특수문자 포함 8자 이상"
                 className="text-xl p-3 border-2 rounded-xl focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
@@ -115,13 +153,18 @@ const Login: React.FC = () => {
             <div className="flex flex-col gap-2">
               <p className="font-bold text-2xl text-left">비밀번호 확인</p>
               <input 
+                ref={signupCheckPasswordRef}
+                placeholder="비밀번호를 다시 입력해주세요"
                 type="password"
                 className="text-xl p-3 border-2 rounded-xl focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
                />
             </div>
 
             <div className="flex justify-center ">
-              <button className="bg-[#D2A7F4] p-1 text-white w-[250px] h-[70px] rounded-xl text-3xl mb-7">회원가입</button>
+              <button 
+                className="bg-[#D2A7F4] p-1 text-white w-[250px] h-[70px] rounded-xl text-3xl mb-7"
+                onClick={signupHandler}
+              >회원가입</button>
             </div>
           </form>}
       </div>

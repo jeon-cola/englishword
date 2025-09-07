@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import purple from "../../componenets/purple.png"
+import axios from "axios"
+import { aw, ax } from "react-router/dist/development/routeModules-rOzWJJ9x"
 
 const Login: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(false)
@@ -16,10 +18,42 @@ const Login: React.FC = () => {
 
   const loginHandler = (e : React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
+    const fetchData = async () => {
+      try {
+        await axios.post("http://localhost:8080/login", {
+          id: emailRef.current?.value,
+          password: passwordRef.current?.value
+        })
+        .then((res) => {
+          console.log(res)
+      })
+      } catch (error) {
+        console.log(error)
+        window.alert("아이디 또는 비밀번호가 일치하지 않습니다.")
+      }
+    }
+    fetchData()
   }
   const signupHandler = (e : React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
+    const fetchData = async () => {
+      try {
+        await axios.post("http://localhost:8080/signup", {
+          id: signupEmailRef.current?.value,
+          password: signupPasswordRef.current?.value, 
+          nickname: signupNicknameRef.current?.value,
+          birthday: `${yearRef.current?.value}-${monthRef.current?.value}-${dayRef.current?.value}`
+        })
+        .then((res) => {
+          console.log(res)
+      })
+      } catch (error) {
+        console.log(error)
+        window.alert("회원가입에 실패했습니다. 다시 시도해주세요.")
+      }
   }
+  fetchData()
+}
   return (
     <div className="flex h-screen">
       <img src={purple} alt="purple image" className="h-full w-[800px] object-cover"/>

@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useRef, useState } from "react"
 import purple from "../../componenets/purple.png"
 import axios from "axios"
-import { aw, ax } from "react-router/dist/development/routeModules-rOzWJJ9x"
+import { useNavigate } from "react-router"
 
 const Login: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(false)
@@ -16,36 +16,48 @@ const Login: React.FC = () => {
   const monthRef = useRef<HTMLSelectElement>(null)
   const dayRef = useRef<HTMLSelectElement>(null)
 
+  const nav = useNavigate()
+
   const loginHandler = (e : React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     const fetchData = async () => {
       try {
-        await axios.post("http://localhost:8080/login", {
+        await axios.post("http://localhost:8080/api/auth/login", {
           id: emailRef.current?.value,
           password: passwordRef.current?.value
         })
         .then((res) => {
-          console.log(res)
+          const data = res.data
+          if (data.message === "successful") {
+            window.alert(`${data.user.name}님 환영합니다!`)
+            nav("/", { state: { id: data.user.id, name: data.user.name }})
+          }
       })
-      } catch (error) {
+      } catch (error: any) {
         console.log(error)
-        window.alert("아이디 또는 비밀번호가 일치하지 않습니다.")
-      }
+        if (error.response.data.message) {
+          console.log(error.response.data.message)
+          window.alert(error.response.data.message)
+        } else {
+          window.alert("로그인에 실패했습니다. 다시 시도해주세요.")
+        }
+      } 
     }
-    fetchData()
+  fetchData()
   }
   const signupHandler = (e : React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     const fetchData = async () => {
       try {
-        await axios.post("http://localhost:8080/signup", {
+        await axios.post("http://localhost:8080/api/auth/signup", {
           id: signupEmailRef.current?.value,
           password: signupPasswordRef.current?.value, 
           nickname: signupNicknameRef.current?.value,
           birthday: `${yearRef.current?.value}-${monthRef.current?.value}-${dayRef.current?.value}`
         })
         .then((res) => {
-          console.log(res)
+          setCurrentPage(false)
+          window.alert("회원가입이 완료되었습니다. 로그인 해주세요.")
       })
       } catch (error) {
         console.log(error)

@@ -1,7 +1,9 @@
 import pool from "./pool"
 import {Router, Request, Response} from "express"
 
+
 const router = Router()
+
 
 router.post("/login", async (req: Request, res: Response) => {
   const {id, password} = req.body
@@ -19,7 +21,8 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!isMatch) {
       return res.status(401).json({ message : "비밀번호가 일치하지 않습니다." })
     }
-    res.status(200).json({ message: "successful", user: { id: user.id, name: user.name } })
+    req.session.user = { id: user.id, name: user.name }
+    res.status(200).json({ message: "successful", user: req.session.user})
   } catch (error) {
     console.log(error)
     res.status(500).send("Server error")
@@ -44,4 +47,14 @@ router.post("/signup", async (req: Request, res: Response) => {
   }
 })
 
+router.post("/logout", (req: Request, res: Response) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err)
+      return res.status(500).send("error")
+    }
+    res.clearCookie("session")
+    res.status(200).json({ message: "successful" })
+  })
+})
 export default router

@@ -3,7 +3,11 @@ import purple from "../../componenets/purple.png"
 import axios from "axios"
 import { useNavigate } from "react-router"
 
-const Login: React.FC = () => {
+export interface LoginProps {
+  setIsLogin: React.Dispatch<React.SetStateAction<string>>
+}
+
+const Login: React.FC<LoginProps> = ({setIsLogin}) => {
   const [currentPage, setCurrentPage] = useState(false)
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
@@ -29,7 +33,9 @@ const Login: React.FC = () => {
         .then((res) => {
           const data = res.data
           if (data.message === "successful") {
+            console.log(data)
             window.alert(`${data.user.name}님 환영합니다!`)
+            setIsLogin(data.user.id)
             nav("/", { state: { id: data.user.id, name: data.user.name }})
           }
       })
@@ -56,8 +62,12 @@ const Login: React.FC = () => {
           birthday: `${yearRef.current?.value}-${monthRef.current?.value}-${dayRef.current?.value}`
         })
         .then((res) => {
-          setCurrentPage(false)
-          window.alert("회원가입이 완료되었습니다. 로그인 해주세요.")
+          const data = res.data
+          console.log(data)
+          if (data === "successful") {
+            setCurrentPage(false)
+            window.alert("회원가입이 완료되었습니다. 로그인 해주세요.")
+          }
       })
       } catch (error) {
         console.log(error)

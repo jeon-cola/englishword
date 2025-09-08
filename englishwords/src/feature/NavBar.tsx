@@ -1,23 +1,52 @@
 import { useNavigate } from "react-router"
 import logo from "../componenets/logo.png"
 
-const NavBar:React.FC = () => {
+interface NavBarProps {
+  isLogin: string,
+  setIsLogin: React.Dispatch<React.SetStateAction<string>>
+}
+
+const NavBar:React.FC<NavBarProps> = ({isLogin, setIsLogin}) => {
   const nav = useNavigate()
   const loginHandler = () => {
+    if (isLogin) {
+      try {
+        const fetchData = async () => {
+          await fetch("http://localhost:8080/api/auth/logout", {
+            method: "POST",
+            credentials: "include",
+          })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.message === "successful") {
+                setIsLogin("")
+                window.alert("로그아웃 되었습니다.")
+                return nav("/")
+            }
+          })
+        }
+        fetchData()
+      } catch (error) {
+        console.log(error)
+        window.alert("로그아웃에 실패했습니다. 다시 시도해주세요.")
+      }
+    }
     nav("/login")
   }
 
-  const honeHandler = () => {
+  const homeHandler = () => {
     nav("/")  
   }
   return (
     <div className="flex justify-between px-5 py-2 items-center">
-      <img src={logo} alt="logo image" onClick={honeHandler} className="cursor-pointer" />
+      <img src={logo} alt="logo image" onClick={homeHandler} className="cursor-pointer" />
 
       <button className="bg-[#064B9D] py-1 px-2 rounded-md"
         onClick={ loginHandler }
       >
+        {isLogin ? <p className="text-xl text-white">로그아웃</p> :
         <p className="text-xl text-white">로그인</p>
+        }
       </button>
     </div>
   )

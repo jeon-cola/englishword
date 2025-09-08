@@ -5,17 +5,19 @@ import TestRouter from "./TestRouter"
 import WordRouter from "./WordRouter"
 import TemplateRouter from "./TemplateRouter"
 import Authentication from "./AuthenticationRouter"
+import { useState } from "react"
 
 const PageRouter: React.FC = () => {
+  const [isLogin, setIsLogin] = useState("")
   return(
     <div>
-      < NavBar/>
+      < NavBar isLogin={isLogin} setIsLogin={setIsLogin}/>
       <Routes>
         <Route path="/" element={<HomeRouter/>} />
         <Route path="/test" element={<TestRouter/>} />
         <Route path="/word" element={<WordRouter/>} />
         <Route path="/template" element={<TemplateRouter/>} />
-        <Route path="/login" element={<Authentication/>} />
+        <Route path="/login" element={<Authentication setIsLogin={setIsLogin}/>} />
       </Routes>
     </div>
   )

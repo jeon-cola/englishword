@@ -21,8 +21,11 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!isMatch) {
       return res.status(401).json({ message : "비밀번호가 일치하지 않습니다." })
     }
-    req.session.user = { id: user.id, name: user.name }
-    res.status(200).json({ message: "successful", user: req.session.user})
+    req.session.regenerate((err) => {
+      if (err) throw err
+        req.session.user = { id: user.id, name: user.name }
+        res.status(200).json({ message: "successful", user: req.session.user})
+    })
   } catch (error) {
     console.log(error)
     res.status(500).send("Server error")

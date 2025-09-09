@@ -11,17 +11,6 @@ const sessionconfig = require("../config/sessionconfig.json")
 const MySQLStoreSession = MySQLStore(session as any)
 const sessionStore = new MySQLStoreSession({}, pool as any)
 
-async function connectDB() {
-  try {
-    const conn  = await pool.getConnection()
-    console.log("DB connected")
-    conn.release()  
-  } catch (error) {
-    console.error("DB connection error:", error)
-  }
-}
-connectDB()
-
 app.use(cors({
   origin: "http://localhost:3000",
   credentials: true,

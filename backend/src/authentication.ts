@@ -3,6 +3,7 @@ import {Router, Request, Response} from "express"
 
 
 const router = Router()
+const sessionconfig = require("../config/sessionconfig.json")
 
 
 router.post("/login", async (req: Request, res: Response) => {
@@ -24,7 +25,10 @@ router.post("/login", async (req: Request, res: Response) => {
     req.session.regenerate((err) => {
       if (err) throw err
         req.session.user = { id: user.id, name: user.name }
-        res.status(200).json({ message: "successful", user: req.session.user})
+        req.session.save((err) => {
+          if (err) throw err
+          res.status(200).json({ message: "successful", user: req.session.user})
+        })
     })
   } catch (error) {
     console.log(error)
@@ -56,7 +60,7 @@ router.post("/logout", (req: Request, res: Response) => {
       console.error(err)
       return res.status(500).send("error")
     }
-    res.clearCookie("session")
+    res.clearCookie(sessionconfig.key)
     res.status(200).json({ message: "successful" })
   })
 })

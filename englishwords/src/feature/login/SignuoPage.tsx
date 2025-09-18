@@ -1,11 +1,16 @@
-import React, { useRef } from "react"
+import React, { useRef, useState } from "react"
 import axios from "axios"
 
 export interface CurrentPageProps {
   setCurrentPage: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const signupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
+const SignupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
+  const [isAble, setIsAble] = useState({
+    isValid: true,  // 이메일 형식이 유효한지 여부
+    isAvailable: true // 이메일이 사용 가능한지 여부
+  })
+
   const signupEmailRef = useRef<HTMLInputElement>(null)
   const signupPasswordRef = useRef<HTMLInputElement>(null)
   const signupCheckPasswordRef = useRef<HTMLInputElement>(null)
@@ -14,31 +19,68 @@ const signupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
   const monthRef = useRef<HTMLSelectElement>(null)
   const dayRef = useRef<HTMLSelectElement>(null)
 
-    const signupHandler = (e : React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      const fetchData = async () => {
-        try {
-          await axios.post("http://localhost:8080/api/auth/signup", {
-            id: signupEmailRef.current?.value,
-            password: signupPasswordRef.current?.value, 
-            nickname: signupNicknameRef.current?.value,
-            birthday: `${yearRef.current?.value}-${monthRef.current?.value}-${dayRef.current?.value}`
-          })
-          .then((res) => {
-            const data = res.data
-            console.log(data)
-            if (data === "successful") {
-              setCurrentPage(false)
-              window.alert("회원가입이 완료되었습니다. 로그인 해주세요.")
-            }
+  // 이메일 중복 검사
+  const emailVaildHandler = async (e: React.FocusEvent<HTMLInputElement>) => {
+    const email = e.target.value
+    const fetchData = async () => {
+      try {
+        await axios.post("http://localhost:8080/api/auth/check", {email: email})
+        .then((res) => {
+          const data = res.data.message
+          if (data === "available") {
+            setIsAble( ({ ...isAble, isAvailable: true }))
+          } else {
+            setIsAble( ({ ...isAble, isAvailable: false }))
+          }
         })
-        } catch (error) {
-          console.log(error)
-          window.alert("회원가입에 실패했습니다. 다시 시도해주세요.")
-        }
+      } catch (error) {
+        console.log(error)
+      }
     }
     fetchData()
   }
+
+  // 이메일 유효성 검사
+  const emailHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    // 이메일 형식 검사 정규식
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const email = e.target.value
+    const isValid = emailRegex.test(email)
+
+    if (!isValid) {
+      setIsAble({ ...isAble, isValid: false })
+      return
+    } else {
+      setIsAble( ({ ...isAble, isValid: true }))
+    }
+  }
+
+  // 로그인 버튼 클릭 핸들러
+  const signupHandler = (e : React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    const fetchData = async () => {
+      try {
+        await axios.post("http://localhost:8080/api/auth/signup", {
+          id: signupEmailRef.current?.value,
+          password: signupPasswordRef.current?.value, 
+          nickname: signupNicknameRef.current?.value,
+          birthday: `${yearRef.current?.value}-${monthRef.current?.value}-${dayRef.current?.value}`
+        })
+        .then((res) => {
+          const data = res.data
+          if (data === "successful") {
+            setCurrentPage(false)
+            window.alert("회원가입이 완료되었습니다. 로그인 해주세요.")
+          }
+      })
+      } catch (error) {
+        console.log(error)
+        window.alert("회원가입에 실패했습니다. 다시 시도해주세요.")
+      }
+  }
+  fetchData()
+}
 
   return (
     <form className="flex flex-col gap-10 h-full">
@@ -94,7 +136,10 @@ const signupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
                 type="text"
                 placeholder="user@email.com"
                 className="text-xl p-3 border-2 rounded-xl focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
-              />
+                onChange={emailHandler}
+                onBlur={emailVaildHandler}
+              /> 
+              {!isAble.isValid ? <p className="text-red-500 text-sm text-left ml-1">이메일 형식이 올바르지 않습니다.</p> : !isAble.isAvailable ? <p className="text-red-500 text-sm text-left ml-1">이미 사용 중인 이메일입니다.</p> : <p className="text-green-500 text-sm text-left ml-1">사용 가능한 이메일입니다.</p>}
             </div>
 
             <div className="flex flex-col gap-2">
@@ -137,4 +182,4 @@ const signupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
   )
 }
 
-export default signupPage
+export default SignupPage

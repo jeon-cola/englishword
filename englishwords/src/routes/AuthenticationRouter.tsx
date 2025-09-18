@@ -1,10 +1,10 @@
-import Login from "../feature/login/Login"
-import {LoginProps} from "../feature/login/Login"
+import LoginPage from "../feature/login/LoginPage"
+import {LoginProps} from "../feature/login/LoginPage"
 
 const Authentication: React.FC<LoginProps> = ({setIsLogin}) => {
   return (
     <div>
-      < Login setIsLogin={setIsLogin} />
+      < LoginPage setIsLogin={setIsLogin} />
     </div>
   )
 }

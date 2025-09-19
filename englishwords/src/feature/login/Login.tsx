@@ -2,17 +2,21 @@ import React, { useRef, } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router"
 
+// 로그인 props 타입
 interface LoginProps {
   setIsLogin: React.Dispatch<React.SetStateAction<string>>
 }
 
+// 로그인 컴포넌트
 const Login: React.FC<LoginProps> = ({setIsLogin}) => {
+
+  // 로그인 정보
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
 
-
   const nav = useNavigate()
 
+  // 로그인 버튼 클릭 핸들러
   const loginHandler = (e : React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     const fetchData = async () => {

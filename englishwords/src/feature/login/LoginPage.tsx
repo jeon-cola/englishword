@@ -3,12 +3,17 @@ import React, { useState } from "react"
 import Login from "./Login"
 import SignupPage from "./SignuoPage"
 
+// 로그인 페이지 props 타입
 export interface LoginProps {
   setIsLogin: React.Dispatch<React.SetStateAction<string>>
 }
 
+// 로그인 페이지 컴포넌트
 const LoginPage:React.FC<LoginProps> = ({setIsLogin}) => {
+
+  // 현재 페이지 상태 (true: 회원가입, false: 로그인)
   const [currentPage, setCurrentPage] = useState(false)
+
   return (
     <div className="flex h-screen">
       <img src={purple} alt="purple image" className="h-full w-[800px] object-cover"/>

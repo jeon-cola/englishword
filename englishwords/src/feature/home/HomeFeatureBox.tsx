@@ -3,14 +3,18 @@ import wordImg from "../../componenets/word.png"
 import templateImg from "../../componenets/template.png"
 import { useNavigate } from "react-router"
 
+// 홈 기능 박스 props 타입
 interface HomeFeatureBoxProps {
   title: string,
   color: string,
   image: "test" | "word" | "template"
 }
 
+// 홈 기능 박스 컴포넌트
 const HomeFeatureBox:React.FC<HomeFeatureBoxProps> = ({title,color, image}) => {
   const nav = useNavigate()
+
+  // 이미지와 설명 매핑 객체
   const content = {
     "test" : [testImg, "시험을 통해 실력을 확인해보세요"],
     "word" : [wordImg, "단어 암기를 통해 실력을 향상 시켜보세요"],

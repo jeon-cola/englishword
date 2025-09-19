@@ -1,16 +1,19 @@
 import React, { useRef, useState } from "react"
 import axios from "axios"
 
+// 회원가입 페이지 props 타입
 export interface CurrentPageProps {
   setCurrentPage: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+// 회원가입 컴포넌트
 const SignupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
   const [isAble, setIsAble] = useState({
     isValid: null as null | Boolean,  // 이메일 형식이 유효한지 여부
     isAvailable: null as null | boolean // 이메일이 사용 가능한지 여부
   })
 
+  // 회원가입 정보
   const signupEmailRef = useRef<HTMLInputElement>(null)
   const [signupPassword,setSignupPassword] = useState("")
   const [signupCheckPassword, setSignupCheckPassword] = useState("")

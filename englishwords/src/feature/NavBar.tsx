@@ -6,8 +6,11 @@ interface NavBarProps {
   setIsLogin: React.Dispatch<React.SetStateAction<string>>
 }
 
+// 네브바 컴포넌트
 const NavBar:React.FC<NavBarProps> = ({isLogin, setIsLogin}) => {
   const nav = useNavigate()
+
+  // 로그인 버튼 클릭 핸들러
   const loginHandler = () => {
     if (isLogin) {
       try {

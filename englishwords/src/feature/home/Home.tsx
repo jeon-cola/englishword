@@ -1,7 +1,7 @@
 import HomeFeatureBox from "./HomeFeatureBox"
 import FeatureInfo from "./FeatureInfo"
 
-
+// 홈 컴포넌트
 const Home: React.FC = () => {
   return(
     <div className=" mt-20 flex flex-col px-5">

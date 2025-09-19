@@ -2,6 +2,7 @@ import TestInfo from "../../componenets/testInfo.png"
 import WordInfo from "../../componenets/wordInfo.png"
 import TemplateInfo from "../../componenets/templateInfo.png"
 
+// 기능 소개 props 타입
 interface FeatureInfoProps {
   title: string
   content: string
@@ -9,7 +10,10 @@ interface FeatureInfoProps {
   sort: boolean
 }
 
+// 기능 소개 컴포넌트
 const FeatureInfo: React.FC<FeatureInfoProps> = ({ title, content, image, sort }) => {
+
+  // 이미지 매핑 객체
   const infoMap = {
     test: TestInfo,
     word: WordInfo,

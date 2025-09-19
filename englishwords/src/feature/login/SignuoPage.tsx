@@ -7,13 +7,13 @@ export interface CurrentPageProps {
 
 const SignupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
   const [isAble, setIsAble] = useState({
-    isValid: true,  // 이메일 형식이 유효한지 여부
-    isAvailable: true // 이메일이 사용 가능한지 여부
+    isValid: null as null | Boolean,  // 이메일 형식이 유효한지 여부
+    isAvailable: null as null | boolean // 이메일이 사용 가능한지 여부
   })
 
   const signupEmailRef = useRef<HTMLInputElement>(null)
-  const signupPasswordRef = useRef<HTMLInputElement>(null)
-  const signupCheckPasswordRef = useRef<HTMLInputElement>(null)
+  const [signupPassword,setSignupPassword] = useState("")
+  const [signupCheckPassword, setSignupCheckPassword] = useState("")
   const signupNicknameRef = useRef<HTMLInputElement>(null)
   const yearRef = useRef<HTMLSelectElement>(null)
   const monthRef = useRef<HTMLSelectElement>(null)
@@ -63,7 +63,7 @@ const SignupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
       try {
         await axios.post("http://localhost:8080/api/auth/signup", {
           id: signupEmailRef.current?.value,
-          password: signupPasswordRef.current?.value, 
+          password: signupPassword, 
           nickname: signupNicknameRef.current?.value,
           birthday: `${yearRef.current?.value}-${monthRef.current?.value}-${dayRef.current?.value}`
         })
@@ -139,7 +139,11 @@ const SignupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
                 onChange={emailHandler}
                 onBlur={emailVaildHandler}
               /> 
-              {!isAble.isValid ? <p className="text-red-500 text-sm text-left ml-1">이메일 형식이 올바르지 않습니다.</p> : !isAble.isAvailable ? <p className="text-red-500 text-sm text-left ml-1">이미 사용 중인 이메일입니다.</p> : <p className="text-green-500 text-sm text-left ml-1">사용 가능한 이메일입니다.</p>}
+              {
+                isAble.isValid === false ? (<p className="text-red-500 text-sm text-left ml-1">이메일 형식이 올바르지 않습니다</p>)
+                : isAble.isAvailable === false ? (<p className="text-red-500 text-sm text-left ml-1">이미 사용 중인 이메일입니다</p>)
+                : isAble.isAvailable && isAble.isValid ? (<p className="text-green-500 text-sm text-left ml-1">사용 가능한 이메일입니다</p>) : null
+              }
             </div>
 
             <div className="flex flex-col gap-2">
@@ -155,7 +159,7 @@ const SignupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
             <div className="flex flex-col gap-2">
               <p className="font-bold text-2xl text-left">비밀번호</p>
               <input 
-                ref={signupPasswordRef}
+                onChange={(e) => setSignupPassword(e.target.value)}
                 type="password"
                 placeholder="영문, 숫자, 특수문자 포함 8자 이상"
                 className="text-xl p-3 border-2 rounded-xl focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
@@ -165,17 +169,45 @@ const SignupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
             <div className="flex flex-col gap-2">
               <p className="font-bold text-2xl text-left">비밀번호 확인</p>
               <input 
-                ref={signupCheckPasswordRef}
+                onChange={(e) => setSignupCheckPassword(e.target.value)}
                 placeholder="비밀번호를 다시 입력해주세요"
                 type="password"
                 className="text-xl p-3 border-2 rounded-xl focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
                />
+               {
+                signupCheckPassword && signupCheckPassword &&signupPassword !== signupCheckPassword  ?
+                <p className="text-red-500 text-sm text-left ml-1">비밀번호가 다릅니다. 다시 확인해 주세요</p>
+                : null
+              }
             </div>
 
             <div className="flex justify-center ">
               <button 
-                className="bg-[#D2A7F4] p-1 text-white w-[250px] h-[70px] rounded-xl text-3xl mb-7"
+                className={`bg-[#D2A7F4] p-1 text-white w-[250px] h-[70px] rounded-xl text-3xl mb-7
+                  ${(!signupEmailRef.current?.value ||
+                  !signupPassword ||
+                  !signupCheckPassword ||
+                  !signupNicknameRef.current?.value ||
+                  !yearRef.current?.value ||
+                  !monthRef.current?.value ||
+                  !dayRef.current?.value ||
+                  signupPassword !== signupCheckPassword ||
+                  isAble.isAvailable === false ||
+                  isAble.isValid === false) ? "opacity-60 cursor-not-allowed" : ""}
+                  `}
                 onClick={signupHandler}
+                disabled={
+                  !signupEmailRef.current?.value ||
+                  !signupPassword ||
+                  !signupCheckPassword ||
+                  !signupNicknameRef.current?.value ||
+                  !yearRef.current?.value ||
+                  !monthRef.current?.value ||
+                  !dayRef.current?.value ||
+                  signupPassword !== signupCheckPassword ||
+                  isAble.isAvailable === false ||
+                  isAble.isValid === false
+                }
               >회원가입</button>
             </div>
           </form>

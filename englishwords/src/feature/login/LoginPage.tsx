@@ -2,6 +2,7 @@ import purple from "../../componenets/purple.png"
 import React, { useState } from "react"
 import Login from "./Login"
 import SignupPage from "./SignuoPage"
+import ForgotPassword from "./ForgotPassword"
 
 // 로그인 페이지 props 타입
 export interface LoginProps {
@@ -13,6 +14,8 @@ const LoginPage:React.FC<LoginProps> = ({setIsLogin}) => {
 
   // 현재 페이지 상태 (true: 회원가입, false: 로그인)
   const [currentPage, setCurrentPage] = useState(false)
+  // 비밀번호 찾기 모달
+  const [isModal, setIsModal] = React.useState(false)
 
   return (
     <div className="flex h-screen">
@@ -29,8 +32,9 @@ const LoginPage:React.FC<LoginProps> = ({setIsLogin}) => {
             onClick={() => setCurrentPage(false)}
             >로그인</h1>
         </div>
-        {currentPage ? <SignupPage setCurrentPage={setCurrentPage} /> : <Login setIsLogin={setIsLogin}/>}
+        {currentPage ? <SignupPage setCurrentPage={setCurrentPage} /> : <Login setIsLogin={setIsLogin} setIsModal={setIsModal}/>}
       </div>
+        {isModal && <ForgotPassword setIsModal={setIsModal}/>}
     </div>
   )
 }

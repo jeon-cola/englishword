@@ -1,14 +1,16 @@
 import React, { useRef, } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router"
+import ForgotPassword from "./ForgotPassword"
 
 // 로그인 props 타입
 interface LoginProps {
   setIsLogin: React.Dispatch<React.SetStateAction<string>>
+  setIsModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 // 로그인 컴포넌트
-const Login: React.FC<LoginProps> = ({setIsLogin}) => {
+const Login: React.FC<LoginProps> = ({setIsLogin, setIsModal}) => {
 
   // 로그인 정보
   const emailRef = useRef<HTMLInputElement>(null)
@@ -67,7 +69,7 @@ const Login: React.FC<LoginProps> = ({setIsLogin}) => {
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center">
                 <p className="font-bold text-2xl">비밀번호</p>
-                <p className="text-[#00A6ED] cursor-pointer text-md">비밀번호 찾기</p>
+                <p className="text-[#00A6ED] cursor-pointer text-md" onClick={() => setIsModal(true)}>비밀번호 찾기</p>
               </div>
               <input 
                 ref={passwordRef}
@@ -76,6 +78,7 @@ const Login: React.FC<LoginProps> = ({setIsLogin}) => {
                 className="text-xl p-3 border-2 rounded-xl focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
                 />
             </div>
+
 
             <div className="flex justify-center"> 
               <button 

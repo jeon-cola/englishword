@@ -8,10 +8,28 @@ export interface CurrentPageProps {
 
 // 회원가입 컴포넌트
 const SignupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
+
   const [isAble, setIsAble] = useState({
     isValid: null as null | Boolean,  // 이메일 형식이 유효한지 여부
     isAvailable: null as null | boolean // 이메일이 사용 가능한지 여부
   })
+
+  // 비밀번호 유효성 관리
+  const [isPasswordValid, setIsPasswordValid ] = useState<boolean | null>(null)
+
+  // 비밀번호 유효성 검사
+  const validPasswordHandler = (password: string) => {
+    const regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/
+    return regex.test(password)
+  }
+
+  // 비밀번호 입력 핸들러
+  const passwordHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const e = event.target.value
+    setSignupPassword(e)
+    setIsPasswordValid(validPasswordHandler(e))
+  }
+
 
   // 회원가입 정보
   const signupEmailRef = useRef<HTMLInputElement>(null)
@@ -162,11 +180,12 @@ const SignupPage:React.FC<CurrentPageProps> = ({setCurrentPage}) => {
             <div className="flex flex-col gap-2">
               <p className="font-bold text-2xl text-left">비밀번호</p>
               <input 
-                onChange={(e) => setSignupPassword(e.target.value)}
+                onChange={passwordHandler}
                 type="password"
                 placeholder="영문, 숫자, 특수문자 포함 8자 이상"
                 className="text-xl p-3 border-2 rounded-xl focus:border-[#D2A7F4] focus:outline-none focus:ring-2 focus:ring-[#D2A7F4]"
               />
+              {!isPasswordValid && signupPassword && <p className="text-sm text-red-500 text-left ml-1">비밀번호는 영문, 숫자, 특수문자를 포함한 8자 이상이여야 합니다.</p>}
             </div>
             
             <div className="flex flex-col gap-2">

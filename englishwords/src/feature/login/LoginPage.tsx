@@ -6,7 +6,7 @@ import ForgotPassword from "./ForgotPassword"
 
 // 로그인 페이지 props 타입
 export interface LoginProps {
-  setIsLogin: React.Dispatch<React.SetStateAction<string>>
+  setIsLogin: React.Dispatch<React.SetStateAction<{id: string, nickname: string}>>
 }
 
 // 로그인 페이지 컴포넌트

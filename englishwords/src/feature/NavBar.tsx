@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 import logo from "../componenets/logo.png"
 import profile from "../componenets/profile.png"
 import { useEffect, useRef, useState } from "react"
@@ -14,6 +14,7 @@ interface NavBarProps {
 // 네브바 컴포넌트
 const NavBar:React.FC<NavBarProps> = ({isLogin, setIsLogin}) => {
   const nav = useNavigate()
+  const location = useLocation()
 
   // 드롭다운 상태관리
   const [isOpen, setIsOpen] = useState(false)
@@ -58,6 +59,10 @@ const NavBar:React.FC<NavBarProps> = ({isLogin, setIsLogin}) => {
       }
     }
     nav("/login")
+  }
+
+    if (location.pathname === "/login") {
+    return null
   }
 
   return (

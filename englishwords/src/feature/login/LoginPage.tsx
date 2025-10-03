@@ -19,9 +19,9 @@ const LoginPage:React.FC<LoginProps> = ({setIsLogin}) => {
 
   return (
     <div className="flex h-screen">
-      <img src={purple} alt="purple image" className="h-full w-[800px] object-cover"/>
+      <img src={purple} alt="purple image" className="h-full w-1/2 object-fill"/>
 
-      <div className="flex flex-col w-full px-20 py-4 gap-5 overflow-y-auto">
+      <div className="flex flex-col w-1/2 px-20 py-4 gap-5 overflow-y-auto">
         <div className="flex gap-10">
           <h1 
             className={`font-bold text-3xl cursor-pointer ${currentPage ? "" : "text-[#CBC8C8]" } duration-300`}

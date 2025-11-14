@@ -66,7 +66,8 @@ const NavBar:React.FC<NavBarProps> = ({isLogin, setIsLogin}) => {
   }
 
   return (
-    <div className="flex justify-between px-5 py-4 items-center relative">
+    <div className="fixed top-0 left-0 w-full flex justify-between px-5 py-4 items-center  z-50">
+
 
       <img src={logo} alt="logo image" onClick={() => nav("/")} className="cursor-pointer" />
       

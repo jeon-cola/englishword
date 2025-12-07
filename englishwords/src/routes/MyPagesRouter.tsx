@@ -1,6 +1,8 @@
 import React from "react"
+import MyPage from "../feature/login/mypage/Mypage"
 
-interface MyPagesProps {
+
+ export interface MyPagesProps {
   isLogin: {
     id: string,
     nickname: string
@@ -9,7 +11,7 @@ interface MyPagesProps {
 
 const MypagesRouter: React.FC<MyPagesProps> = ({isLogin}) => {
   return(
-    <div>{isLogin.nickname}</div>
+    <MyPage isLogin={isLogin}/>
   )
 }
 export default MypagesRouter

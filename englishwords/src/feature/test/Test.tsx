@@ -8,7 +8,7 @@ const Test:React.FC = () => {
       className="absolute inset-0 bg-cover bg-top bg-no-repeat flex justify-center"
       style={{backgroundImage: `url(${bg})`}}
     >
-      <div className="mt-16 h-[800px] w-2/3 bg-cover rounded-xl shadow-xl"
+      <div className="mt-16 h-[750px] w-2/3 bg-cover rounded-xl shadow-xl"
         style={{backgroundImage: `url(${white})`}}
       >
         <div>

@@ -13,18 +13,20 @@ const MyPage:React.FC<MyPagesProps> = ({isLogin}) => {
 
     const changePasswordHandler = async () => {
         try {
-            await axios.post("http://localhost:8080/api/auth/forgot_email", { email: password.current?.value, changePassword: changePassword.current?.value})
+            await axios.post("http://localhost:8080/api/auth/change_password", { id: isLogin.id ,password: password.current?.value, changePassword: changePassword.current?.value})
             .then((res) => {
                 const data = res.data.message
                 console.log(data)
                 if (data === "successful") {
-                    setIsModal(true)
+                    window.alert("비밀번호가 성공적으로 변경되었습니다.")
+                    setIsModal(false)
                 } else {
                     setIsConnect(false)
                 }
             })
         } catch (error) {
             console.log(error)
+            window.alert(error)
         }
     }
 

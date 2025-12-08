@@ -30,12 +30,12 @@ router.post("/login", async (req: Request, res: Response) => {
         req.session.user = { id: user.id, name: user.name }
         req.session.save((err) => {
           if (err) throw err
-          res.status(200).json({ message: "successful", user: req.session.user})
+          return res.status(200).json({ message: "successful", user: req.session.user})
         })
     })
   } catch (error) {
     console.log(error)
-    res.status(500).send("Server error")
+    return res.status(500).send("Server error")
   }
 })
 
@@ -49,11 +49,11 @@ router.post("/signup", async (req: Request, res: Response) => {
 
     conn.release()
     console.log(result)
-    res.status(201).send("successful")
+    return res.status(201).send("successful")
 
   } catch (error) {
     console.log(error)
-    res.status(500).send("Server error")
+    return res.status(500).send("Server error")
   }
 })
 
@@ -64,7 +64,7 @@ router.post("/logout", (req: Request, res: Response) => {
       return res.status(500).send("error")
     }
     res.clearCookie(sessionconfig.key)
-    res.status(200).json({ message: "successful" })
+    return res.status(200).json({ message: "successful" })
   })
 })
 
@@ -76,12 +76,12 @@ router.post("/check", async (req: Request, res: Response) => {
     const [result] = await conn.query(sql, [email])
     conn.release()
     if ((result as any).length === 0) {
-      res.status(200).json({ message: "available" })
+      return res.status(200).json({ message: "available" })
     } else {
-      res.status(200).json({ message: "unavailable" })
+      return res.status(200).json({ message: "unavailable" })
     }
   } catch (error) {
-    res.status(500).json({message: "server error"})
+    return res.status(500).json({message: "server error"})
   }
 })
 
@@ -124,18 +124,49 @@ router.post("/forgot_email", async (req: Request, res: Response) => {
     const sql = `SELECT * FROM users WHERE id = ?`
     const [result] = await conn.query(sql, [email])
     if ((result as any).length === 0) {
-      res.status(200).json({ message: "failful" })
+      return res.status(200).json({ message: "failful" })
     } else {
       const tempPassword = gernerateTempPassword()
       await conn.query(`UPDATE users SET password =? WHERE id = ?`, [tempPassword, email])
 
       await sendTempPasswordEmail(email, tempPassword)
-      res.status(200).json({ message: "successful" })
+      return res.status(200).json({ message: "successful" })
     }
 
   } catch (error) {
     console.log(error)
-    res.status(500).json({message: "server error"})
+    return res.status(500).json({message: "server error"})
+  }
+})
+
+router.post("/change_password", async (req:Request, res: Response) => {
+  const {id, password, changePassword } = req.body
+  
+  if (!id || !password || !changePassword) return res.status(500).json({message: "필수값이 누락되었습니다"})
+
+  try {
+    const conn = await pool.getConnection()
+    const [rows]: any = await conn.query(
+      `SELECT * FROM users WHERE id = ?`, [id]
+    )
+    console.log(await conn.query(
+      `SELECT * FROM users WHERE id = ?`, [id]
+    ))
+    if (rows.length === 0) return res.status(500).json({message: "존재하지 않는 사용자 입니다"})
+
+    const user = rows[0]
+
+    if (user.password === password) {
+      await conn.query(
+        `UPDATE users SET password = ? WHERE id = ?`, [changePassword, id]
+      )
+      return res.status(200).json({ message: "successful" })
+    } else {
+      return res.status(200).json({message: "비밀번호가 틀립니다."})
+    }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({message: "server error"})
   }
 })
 

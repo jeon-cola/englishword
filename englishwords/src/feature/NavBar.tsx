@@ -88,7 +88,7 @@ const NavBar:React.FC<NavBarProps> = ({isLogin, setIsLogin}) => {
                 </div>
               </div>
               <p 
-                onClick={() => {nav("/mypages")}}
+                onClick={() => {setIsOpen(false); nav("/mypages")}}
                 className="font-bold text-[#374151] cursor-pointer hover:bg-[#E1DBDB] px-5 py-2 rounded-md"
                 >설정</p>
               <p 

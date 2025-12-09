@@ -6,12 +6,13 @@ import MyPage from "../feature/login/mypage/Mypage"
   isLogin: {
     id: string,
     nickname: string
-  }
+  }, 
+  setIsLogin: React.Dispatch<React.SetStateAction<{id: string, nickname: string}>>
 }
 
-const MypagesRouter: React.FC<MyPagesProps> = ({isLogin}) => {
+const MypagesRouter: React.FC<MyPagesProps> = ({isLogin, setIsLogin}) => {
   return(
-    <MyPage isLogin={isLogin}/>
+    <MyPage isLogin={isLogin} setIsLogin={setIsLogin}/>
   )
 }
 export default MypagesRouter

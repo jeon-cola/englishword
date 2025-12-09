@@ -21,7 +21,7 @@ const PageRouter: React.FC = () => {
         <Route path="/word" element={<WordRouter/>} />
         <Route path="/template" element={<TemplateRouter/>} />
         <Route path="/login" element={<Authentication setIsLogin={setIsLogin}/>} />
-        <Route path="/mypages" element={<MypagesRouter isLogin={isLogin}/> }/>
+        <Route path="/mypages" element={<MypagesRouter isLogin={isLogin} setIsLogin={setIsLogin}/> }/>
       </Routes>
     </div>
   )

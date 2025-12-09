@@ -5,11 +5,33 @@ import next_icon from "../../../componenets/next.png"
 import { useRef, useState } from "react"
 import axios from "axios"
 
-const MyPage:React.FC<MyPagesProps> = ({isLogin}) => {
+const MyPage:React.FC<MyPagesProps> = ({isLogin, setIsLogin}) => {
     const [isModal, setIsModal] = useState(false)
     const [isConnect, setIsConnect] = useState<boolean | null>(null)
     const password = useRef<HTMLInputElement>(null)
     const changePassword = useRef<HTMLInputElement>(null)
+    const nickname = useRef<HTMLInputElement>(null)
+    const [isMode, setIsMode] = useState("")
+
+    const changeNicknameHandler= async () => {
+        try {
+            await axios.post("http://localhost:8080/api/auth/change_nickname", {id: isLogin.id, nickname: nickname.current?.value})
+            .then((res) => {
+                const data = res.data.message
+                if (data === "successful") {
+                    setIsLogin(prev => ({
+                        ...prev,
+                        nickname: res.data.data
+                    }))
+                    window.alert("닉네임이 성공적으로 변경되었습니다.")
+                    setIsModal(false)
+                }
+            })
+        } catch (error) {
+            console.log(error)
+            window.alert("서버에러 잠시후 시도해주세요")
+        }
+    }
 
     const changePasswordHandler = async () => {
         try {
@@ -26,12 +48,20 @@ const MyPage:React.FC<MyPagesProps> = ({isLogin}) => {
             })
         } catch (error) {
             console.log(error)
-            window.alert(error)
+            window.alert("서버에러 잠시후 시도해주세요")
         }
     }
 
+
     const passwordHandler = (e: React.MouseEvent<HTMLImageElement>) => {
         e.preventDefault()
+        setIsMode("changePassword")
+        setIsModal(true)
+    }
+
+    const nicknameHandelr = (e: React.MouseEvent<HTMLImageElement>) => {
+        e.preventDefault()
+        setIsMode("changeNickname")
         setIsModal(true)
     }
 
@@ -50,13 +80,31 @@ const MyPage:React.FC<MyPagesProps> = ({isLogin}) => {
                 </div>
             </div>
 
+                <div className="w-full p-4 border rounded-xl shadow-xl flex justify-between items-center">
+                    <p className="font-bold text-2xl text-left">닉네임 변경하기</p>
+                    <img src={next_icon} alt="next_icon" className="w-[30px]" onClick={nicknameHandelr}/>
+                </div>
+
                 <div className="w-full  p-4 border rounded-xl shadow-xl flex justify-between items-center">
                     <p className="font-bold text-2xl text-left">비밀번호 변경하기</p>
                     <img src={next_icon} alt="next icon" className="w-[30px]" onClick={passwordHandler}/>
                 </div>
 
 
-        {isModal ? < Modal 
+
+        { isModal && (isMode === "changeNickname") && <Modal 
+            functionHandler={changeNicknameHandler}
+            title="닉네임 변경"
+            discript={
+                <div className="w-full flex flex-col gap-2 mt-3">
+                    <p className="text-left font-bold text-md" >닉네임</p>
+                    <input ref={nickname} type="text" placeholder={isLogin.nickname} className="text-xl p-3 border-2 rounded-xl focus:border-[#064B9D] focus:outline-none focus:ring-2 focus:ring-[#064B9D] w-full mt-2"/>
+                </div>
+            }
+            buttonName="변경"  isModal={setIsModal}
+        />}
+
+        { isModal && (isMode === "changePassword" ) &&  (< Modal 
             functionHandler={changePasswordHandler}
             title="비밀번호 변경" 
             discript={
@@ -67,7 +115,7 @@ const MyPage:React.FC<MyPagesProps> = ({isLogin}) => {
                     <p className="text-left font-bold text-md">변경 비밀번호</p>
                     <input ref={changePassword}type="password" placeholder="변경을 원하는 비밀번호를 입력해주세요" className="text-xl p-3 border-2 rounded-xl focus:border-[#064B9D] focus:outline-none focus:ring-2 focus:ring-[#064B9D] w-full mt-2"/>
                 </div>} 
-            buttonName="변경" isModal={setIsModal} /> : ""}
+            buttonName="변경" isModal={setIsModal} />)}
 
         </div>
     )

@@ -170,4 +170,24 @@ router.post("/change_password", async (req:Request, res: Response) => {
   }
 })
 
+router.post("/change_nickname", async (req: Request, res: Response) => {
+  const { id, nickname } = req.body
+  try {
+    const conn = await pool.getConnection()
+    const [row]: any = await conn.query(`
+      SELECT * FROM users WHERE id = ?
+      `, [id])
+
+      const user = row[0]
+      await conn.query(`
+        UPDATE users SET name = ?
+      `, [nickname])
+      return res.status(200).json({ message: "successful", data: `${nickname}` })
+      
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({message: "server error"})
+  }
+})
+
   export default router

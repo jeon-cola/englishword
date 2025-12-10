@@ -13,6 +13,7 @@ const app = (0, express_1.default)();
 const sessionconfig = require("../config/sessionconfig.json");
 const MySQLStoreSession = (0, express_mysql_session_1.default)(express_session_1.default);
 const sessionStore = new MySQLStoreSession({}, pool_1.default);
+app.use('/uploads', express_1.default.static("uploads"));
 app.use((0, cors_1.default)({
     origin: "http://localhost:3000",
     credentials: true,

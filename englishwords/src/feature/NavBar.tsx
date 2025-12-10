@@ -1,14 +1,14 @@
 import { useLocation, useNavigate } from "react-router"
 import logo from "../componenets/logo.png"
-import profile from "../componenets/profile.png"
 import { useEffect, useRef, useState } from "react"
 
 interface NavBarProps {
   isLogin: {
     id: string,
-    nickname: string
+    nickname: string,
+    profile: string
   },
-  setIsLogin: React.Dispatch<React.SetStateAction<{id: string, nickname: string}>>
+  setIsLogin: React.Dispatch<React.SetStateAction<{id: string, nickname: string, profile: string}>>
 }
 
 // 네브바 컴포넌트
@@ -45,7 +45,7 @@ const NavBar:React.FC<NavBarProps> = ({isLogin, setIsLogin}) => {
           .then((res) => res.json())
           .then((data) => {
             if (data.message === "successful") {
-                setIsLogin({id: "", nickname: ""})
+                setIsLogin({id: "", nickname: "", profile: ""})
                 window.alert("로그아웃 되었습니다.")
                 setIsOpen(false)
                 return nav("/")
@@ -72,7 +72,7 @@ const NavBar:React.FC<NavBarProps> = ({isLogin, setIsLogin}) => {
       <img src={logo} alt="logo image" onClick={() => nav("/")} className="cursor-pointer" />
       
       <div ref={dropdownRef}>
-        {(isLogin.id) ? <img src={profile} alt="프로필 이미지" className="w-[40px] cursor-pointer" onClick={() => setIsOpen(!isOpen)}/>
+        {(isLogin.id) ? <img src={isLogin.profile} alt="프로필 이미지" className="w-[40px] cursor-pointer" onClick={() => setIsOpen(!isOpen)}/>
         : <button className="bg-[#064B9D] py-1 px-2 rounded-md"
         onClick={ loginHandler }
         >
@@ -81,7 +81,7 @@ const NavBar:React.FC<NavBarProps> = ({isLogin, setIsLogin}) => {
         }
           {isOpen && <div  className="absolute top-full right-0 flex flex-col text-left rounded-xl mt-1 shadow-2xl pb-2">
               <div className="flex gap-2 px-5 py-2">
-                <img src={profile} alt="profile image" className="w-[50px]" />
+                <img src={isLogin.profile} alt="profile image" className="w-[50px]" />
                 <div className="gap-1">
                   <p className="font-bold">{isLogin.nickname}</p>
                   <p className="text-[#B4ACBC]">{isLogin.id}</p>
@@ -94,7 +94,7 @@ const NavBar:React.FC<NavBarProps> = ({isLogin, setIsLogin}) => {
               <p 
                 className="cursor-pointer font-bold text-[#374151] px-5 py-2  hover:bg-[#E1DBDB] rounded-md"
                 onClick={() => {
-                  setIsLogin({id: "", nickname: ""})
+                  setIsLogin({id: "", nickname: "", profile: ""})
                   loginHandler()
                 }}>로그아웃</p>
             </div>}

@@ -11,6 +11,8 @@ const sessionconfig = require("../config/sessionconfig.json")
 const MySQLStoreSession = MySQLStore(session as any)
 const sessionStore = new MySQLStoreSession({}, pool as any)
 
+app.use('/uploads', express.static("uploads"))
+
 app.use(cors({
   origin: "http://localhost:3000",
   credentials: true,

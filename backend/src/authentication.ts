@@ -26,8 +26,8 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(401).json({ message : "비밀번호가 일치하지 않습니다." })
     }
     req.session.regenerate((err) => {
-      if (err) throw err
-        req.session.user = { id: user.id, name: user.name }
+        if (err) throw err
+        req.session.user = { id: user.id, name: user.name, profile: user.profile_image }
         req.session.save((err) => {
           if (err) throw err
           return res.status(200).json({ message: "successful", user: req.session.user})
@@ -43,9 +43,10 @@ router.post("/signup", async (req: Request, res: Response) => {
   const {id, password, nickname, birthday} = req.body
   try {
     const conn = await pool.getConnection()
+    const profile_image = "http://localhost:8080/uploads/profile.png"
 
-    const sql = `INSERT INTO users (id, password, name, birthday) VALUES (?, ?, ?, ?)`
-    const [result]  = await conn.query(sql, [id, password, nickname, birthday])
+    const sql = `INSERT INTO users (id, password, name, birthday, profile_image) VALUES (?, ?, ?, ?, ?)`
+    const [result]  = await conn.query(sql, [id, password, nickname, birthday, profile_image])
 
     conn.release()
     console.log(result)
@@ -170,19 +171,21 @@ router.post("/change_password", async (req:Request, res: Response) => {
   }
 })
 
-router.post("/change_nickname", async (req: Request, res: Response) => {
-  const { id, nickname } = req.body
+router.post("/change_profile", async (req: Request, res: Response) => {
+  const { id, nickname, profile } = req.body
+  console.log(profile)
   try {
     const conn = await pool.getConnection()
-    const [row]: any = await conn.query(`
-      SELECT * FROM users WHERE id = ?
-      `, [id])
 
-      const user = row[0]
       await conn.query(`
-        UPDATE users SET name = ?
-      `, [nickname])
-      return res.status(200).json({ message: "successful", data: `${nickname}` })
+        UPDATE users SET name = ?, profile_image = ? WHERE id = ?
+        `, [nickname, profile, id])
+
+        const [row]: any = await conn.query(`
+          SELECT id, name, profile_image FROM users WHERE id = ?
+          `, [id])
+        const user = row[0]
+      return res.status(200).json({ message: "successful", data:{nickname: `${user.name}`, profile: `${user.profile_image}`} })
       
   } catch (error) {
     console.log(error)

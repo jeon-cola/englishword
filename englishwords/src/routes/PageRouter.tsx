@@ -11,7 +11,7 @@ import { useState } from "react"
 // 페이지 라우터 컴포넌트
 const PageRouter: React.FC = () => {
   // 로그인 상태 (빈 문자열: 비로그인, 값이 있으면 로그인)
-  const [isLogin, setIsLogin] = useState({id: "", nickname: ""})
+  const [isLogin, setIsLogin] = useState({id: "", nickname: "", profile: ""})
   return(
     <div>
       < NavBar isLogin={isLogin} setIsLogin={setIsLogin}/>

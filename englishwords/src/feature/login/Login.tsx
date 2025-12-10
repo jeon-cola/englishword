@@ -5,7 +5,7 @@ import ForgotPassword from "./ForgotPassword"
 
 // 로그인 props 타입
 interface LoginProps {
-  setIsLogin: React.Dispatch<React.SetStateAction<{id: string, nickname: string}>>
+  setIsLogin: React.Dispatch<React.SetStateAction<{id: string, nickname: string, profile: string}>>
   setIsModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -32,7 +32,7 @@ const Login: React.FC<LoginProps> = ({setIsLogin, setIsModal}) => {
           if (data.message === "successful") {
             console.log(data)
             window.alert(`${data.user.name}님 환영합니다!`)
-            setIsLogin({id: data.user.id, nickname: data.user.name})
+            setIsLogin({id: data.user.id, nickname: data.user.name, profile: data.user.profile})
             nav("/", { state: { id: data.user.id, name: data.user.name }})
           }
       })

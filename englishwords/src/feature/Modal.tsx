@@ -17,7 +17,7 @@ const Modal:React.FC<ModalProps> = ({title, discript, buttonName, isModal, funct
                 {discript}
 
                 <div className="flex justify-center gap-5 mt-auto pt-4">
-                    <button className="text-gray-400 border px-4 py-2 rounded-md font-bold text-xl">취소</button>
+                    <button className="text-gray-400 border px-4 py-2 rounded-md font-bold text-xl" onClick={() => {isModal(false)}}>취소</button>
                     <button className="text-white bg-[#064B9D] border px-4 py-2 rounded-md font-bold text-xl" onClick={functionHandler}>{buttonName ? buttonName : "확인"}</button>
                 </div>
             </div>

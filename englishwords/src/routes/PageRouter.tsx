@@ -6,12 +6,29 @@ import WordRouter from "./WordRouter"
 import TemplateRouter from "./TemplateRouter"
 import Authentication from "./AuthenticationRouter"
 import MypagesRouter from "./MyPagesRouter"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import axios from "../libs/axios"
 
 // 페이지 라우터 컴포넌트
 const PageRouter: React.FC = () => {
   // 로그인 상태 (빈 문자열: 비로그인, 값이 있으면 로그인)
   const [isLogin, setIsLogin] = useState({id: "", nickname: "", profile: ""})
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        await axios.get("http://localhost:8080/api/auth/me")
+        .then((res) => {
+          console.log(res)
+          if (res.data.isLogin) setIsLogin({id: res.data.user.id, nickname: res.data.user.name, profile: res.data.user.profile}) 
+          
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    checkLogin()
+  }, [])
   return(
     <div>
       < NavBar isLogin={isLogin} setIsLogin={setIsLogin}/>

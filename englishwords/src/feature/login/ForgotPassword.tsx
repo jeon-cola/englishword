@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from '../../libs/axios'
 import React, { ReactEventHandler, useRef, useState } from "react"
 import cloaseIcon from "../../componenets/close.png"
 

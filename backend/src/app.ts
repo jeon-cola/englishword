@@ -7,6 +7,7 @@ import MySQLStore from "express-mysql-session"
 
 
 const app = express()
+
 const sessionconfig = require("../config/sessionconfig.json")
 const MySQLStoreSession = MySQLStore(session as any)
 const sessionStore = new MySQLStoreSession({}, pool as any)

@@ -2,11 +2,23 @@ import pool from "./pool"
 import {Router, Request, Response} from "express"
 import nodemailer from "nodemailer"
 import smtpTransport from "nodemailer-smtp-transport"
+import { upload } from "./Storage"
 
 
 const mailConfig = require("../config/mailConfig.json")
 const router = Router()
 const sessionconfig = require("../config/sessionconfig.json")
+
+router.get("/me", async (req: Request, res: Response) => {
+  console.log("session",req.session)
+  if (!req.session.user) {
+    return res.status(200).json({ isLogin: false})
+  }
+  return res.status(200).json({
+    isLogin: true,
+    user: req.session.user
+  })
+})
 
 
 router.post("/login", async (req: Request, res: Response) => {
@@ -171,24 +183,30 @@ router.post("/change_password", async (req:Request, res: Response) => {
   }
 })
 
-router.post("/change_profile", async (req: Request, res: Response) => {
-  const { id, nickname, profile } = req.body
-  console.log(profile)
+router.post("/change_profile", upload.single('profile'), async (req: Request, res: Response) => {
   try {
+    const { id, nickname } = req.body
     const conn = await pool.getConnection()
+    const profile = req.file ? `http://localhost:8080/uploads/${req.file.filename}` : null
 
-      await conn.query(`
-        UPDATE users SET name = ?, profile_image = ? WHERE id = ?
-        `, [nickname, profile, id])
+    if (profile) {
+      await conn.query(`      
+      UPDATE users SET name = ?, profile_image = ? WHERE id = ?
+      `, [nickname, profile, id])
+    } else {
+      await conn.query(`      
+        UPDATE users SET name = ? WHERE id = ?
+      `, [nickname, id])
+    }
 
-        const [row]: any = await conn.query(`
+    const [row]: any = await conn.query(`
           SELECT id, name, profile_image FROM users WHERE id = ?
           `, [id])
-        const user = row[0]
-      return res.status(200).json({ message: "successful", data:{nickname: `${user.name}`, profile: `${user.profile_image}`} })
+    const user = row[0]
+    return res.status(200).json({ message: "successful", data:{nickname: `${user.name}`, profile: `${user.profile_image}`} })
       
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     return res.status(500).json({message: "server error"})
   }
 })

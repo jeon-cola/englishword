@@ -3,7 +3,7 @@ import Modal from "../../Modal"
 import next_icon from "../../../componenets/next.png"
 import React, { useEffect, useRef, useState } from "react"
 import camera from "../../../componenets/camera.png"
-import axios from "axios"
+import axios from '../../../libs/axios'
 
 const MyPage:React.FC<MyPagesProps> = ({isLogin, setIsLogin}) => {
     const [isModal, setIsModal] = useState(false)
@@ -13,6 +13,7 @@ const MyPage:React.FC<MyPagesProps> = ({isLogin, setIsLogin}) => {
     const nickname = useRef<HTMLInputElement>(null)
     const [isMode, setIsMode] = useState("")
     const imageRef = useRef<HTMLInputElement>(null)
+    const [imageFile, setImageFile] = useState<File | null>(null)
     const [imageURL, setImageURL] = useState<string>(isLogin.profile)
 
     const imageClickHandler= () => {
@@ -22,6 +23,8 @@ const MyPage:React.FC<MyPagesProps> = ({isLogin, setIsLogin}) => {
     const imageChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
+        
+        setImageFile(file)
 
         const preview = URL.createObjectURL(file)
         setImageURL(preview)
@@ -34,7 +37,14 @@ const MyPage:React.FC<MyPagesProps> = ({isLogin, setIsLogin}) => {
                     nickname.current.value = isLogin.nickname
                 }
             }
-            await axios.post("http://localhost:8080/api/auth/change_profile", {id: isLogin.id, nickname: nickname.current?.value, profile: imageURL})
+
+            const formData = new FormData()
+            formData.append("id", isLogin.id)
+            formData.append("nickname", nickname.current!.value)
+
+            if (imageFile) formData.append('profile', imageFile)
+
+            await axios.post("http://localhost:8080/api/auth/change_profile", formData, { headers: {"Content-Type": "multipart/form-data"} } )
             .then((res) => {
                 const data = res.data.message
                 if (data === "successful") {

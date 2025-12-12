@@ -1,5 +1,5 @@
 import React, { useRef, } from "react"
-import axios from "axios"
+import axios from "../../libs/axios"
 import { useNavigate } from "react-router"
 import ForgotPassword from "./ForgotPassword"
 
@@ -48,6 +48,7 @@ const Login: React.FC<LoginProps> = ({setIsLogin, setIsModal}) => {
     }
   fetchData()
   }
+
   return (
     <form className="flex flex-col gap-10 h-full">
             

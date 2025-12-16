@@ -9,3 +9,6 @@ create table if not exists users (
 
 AlTER TABLE users
 ADD COLUMN profile_image varchar(300) comment "프로필 이미지 URL";
+
+AlTER TABLE users
+ADD COLUMN test 

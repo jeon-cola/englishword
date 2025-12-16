@@ -6,6 +6,7 @@ import WordRouter from "./WordRouter"
 import TemplateRouter from "./TemplateRouter"
 import Authentication from "./AuthenticationRouter"
 import MypagesRouter from "./MyPagesRouter"
+import TestCreate from "../feature/test/create_test/TestCreate"
 import { useEffect, useState } from "react"
 import axios from "../libs/axios"
 
@@ -39,6 +40,7 @@ const PageRouter: React.FC = () => {
         <Route path="/template" element={<TemplateRouter/>} />
         <Route path="/login" element={<Authentication setIsLogin={setIsLogin}/>} />
         <Route path="/mypages" element={<MypagesRouter isLogin={isLogin} setIsLogin={setIsLogin}/> }/>
+        <Route path="/create_test" element={<TestCreate/>}/>
       </Routes>
     </div>
   )

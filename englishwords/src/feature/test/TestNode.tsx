@@ -5,7 +5,6 @@ import openIcon from "../../componenets/openICon.png"
 import playIcon from "../../componenets/playIcon.png"
 import nullIcon from "../../componenets/nullIcon.png"
 import { useState } from "react"
-import { p } from "react-router/dist/development/index-react-server-client-BKpa2trA"
 type partKey = "part1" | "part2" | "part3" | "part4" | "part5"
 
 interface testNodeProps {

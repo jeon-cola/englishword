@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const pool_1 = __importDefault(require("./pool"));
 const authentication_1 = __importDefault(require("./authentication"));
+const test_1 = __importDefault(require("./test"));
 const express_session_1 = __importDefault(require("express-session"));
 const express_mysql_session_1 = __importDefault(require("express-mysql-session"));
 const app = (0, express_1.default)();
@@ -35,6 +36,7 @@ app.use((0, express_session_1.default)({
     }
 }));
 app.use("/api/auth", authentication_1.default);
+app.use("/api/create_test", test_1.default);
 app.listen(8080, () => {
     console.log("start server");
 });

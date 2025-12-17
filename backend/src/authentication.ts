@@ -2,7 +2,7 @@ import pool from "./pool"
 import {Router, Request, Response} from "express"
 import nodemailer from "nodemailer"
 import smtpTransport from "nodemailer-smtp-transport"
-import { upload } from "./Storage"
+import { upload } from "./storage"
 
 
 const mailConfig = require("../config/mailConfig.json")

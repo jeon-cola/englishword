@@ -2,6 +2,7 @@ import express, {Request, Response} from "express"
 import cors from "cors"
 import pool from "./pool"
 import authRouter from "./authentication"
+import testRouter from "./test"
 import session from "express-session"
 import MySQLStore from "express-mysql-session"
 
@@ -36,6 +37,7 @@ app.use(session({
 }))
 
 app.use("/api/auth", authRouter)
+app.use("/api/create_test", testRouter)
 
 app.listen(8080, () => {
     console.log("start server")

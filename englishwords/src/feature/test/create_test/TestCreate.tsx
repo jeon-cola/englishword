@@ -34,9 +34,11 @@ const TestCreate:React.FC = () => {
                     testId = res.data.testId
                 }
             })
-            await axios.post("http://localhost:8080/api/create_test/part/", {
-                testId,
-                parts: [
+            const formData = new FormData()
+            formData.append("testId", String(testId))
+            formData.append(
+                "parts",
+                JSON.stringify([
                     {
                     part_no: 1,
                     contents: [
@@ -47,13 +49,13 @@ const TestCreate:React.FC = () => {
                     {
                     part_no: 2,
                     contents: [
-                        { type: "IMAGE", content: part2F1.current?.value, order: 1 },
-                        { type: "IMAGE", content: part2F2.current?.value, order: 2 }
+                        { type: "IMAGE", content: "part2_image1", order: 1 },
+                        { type: "IMAGE", content: "part2_image2", order: 2 }
                     ]
                     },
                     {
                     part_no: 3,
-                    contents: [ { type: "INTRO", content: part3Intro.current?.value, order: 1 } ],
+                    contents: [ { type: "TEXT", content: part3Intro.current?.value, order: 1 } ],
                     questions: [
                         { text: part3Q1.current?.value, order: 1 },
                         { text: part3Q2.current?.value, order: 2 },
@@ -62,7 +64,7 @@ const TestCreate:React.FC = () => {
                     },
                     {
                     part_no: 4,
-                    contents: [ { type: "IMAGE", content: part4F.current?.value, order: 1 } ],
+                    contents: [ { type: "IMAGE", content: "part4_image1", order: 1 } ],
                     questions: [
                         { text: part4Q1.current?.value, order: 1 },
                         { text: part4Q2.current?.value, order: 2 },
@@ -78,8 +80,20 @@ const TestCreate:React.FC = () => {
                         part5O3.current?.value
                     ]
                     }
-                ]
-                })
+                ])
+            )
+
+            if (part2F1.current?.files?.[0]) {
+                formData.append("part2_image1", part2F1.current?.files[0])
+            }
+            if (part2F2.current?.files?.[0]) {
+                formData.append("part2_image2", part2F2.current?.files[0])
+            }
+            if (part4F.current?.files?.[0]) {
+                formData.append("part4_image1", part4F.current?.files[0])
+            }
+
+            await axios.post("http://localhost:8080/api/create_test/part/", formData, {headers: {"Content-Type": "multipart/form-data"}})
 
             .then((res) => {
                 const result = res.data.message

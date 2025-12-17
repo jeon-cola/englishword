@@ -1,15 +1,19 @@
+import { useEffect } from "react"
 import bg from "../../componenets/background.png"
 import white from "../../componenets/white.webp"
 import TestNode from "./TestNode"
+import axios from "../../libs/axios"
 // 테스트 컴포넌트
 const Test:React.FC = () => {
-  const testList = {
-    part1: true,
-    part2: true,
-    part3: true,
-    part4: false,
-    part5: null
-  }
+  useEffect(() => {
+    const data = async () => {
+      await axios.get("http://localhost:8080/api/create_test/reach_test",{params: {testId: "1"}})
+      .then((res) => {
+        console.log(res.data)
+      })
+    }
+    data()
+  })
   return (
     <div 
       className="absolute inset-0 bg-cover bg-top bg-no-repeat flex justify-center"
@@ -23,7 +27,7 @@ const Test:React.FC = () => {
 
           <div className="flex-1 overflow-y-auto">
             <div className="flex flex-col gap-2">
-              <TestNode testNumber="문제1"  partCheck={testList}/>
+              {/* <TestNode testNumber="문제1"  partCheck={testList}/>
               <TestNode testNumber="문제2"  partCheck={testList}/>
               <TestNode testNumber="문제3"  partCheck={testList}/>
               <TestNode testNumber="문제4"  partCheck={testList}/>
@@ -31,7 +35,7 @@ const Test:React.FC = () => {
               <TestNode testNumber="문제6"  partCheck={testList}/>
               <TestNode testNumber="문제7"  partCheck={testList}/>
               <TestNode testNumber="문제8"  partCheck={testList}/>
-              <TestNode testNumber="문제9"  partCheck={testList}/>
+              <TestNode testNumber="문제9"  partCheck={testList}/> */}
             </div>
           </div>
 

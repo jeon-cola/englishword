@@ -5,16 +5,35 @@ import openIcon from "../../componenets/openICon.png"
 import playIcon from "../../componenets/playIcon.png"
 import nullIcon from "../../componenets/nullIcon.png"
 import { useState } from "react"
+import { PartProgress } from "./Test"
 type partKey = "part1" | "part2" | "part3" | "part4" | "part5"
 
 interface testNodeProps {
     testNumber: string,
-    partCheck: Record<partKey, boolean | null>
+    partCheck: PartProgress[]
+}
+
+const getStatusIcon = (status: PartProgress["status"]) => {
+  switch (status) {
+    case "COMPLETED":
+      return trueCheck
+    case "IN_PROGRESS":
+      return falseCheck
+    default:
+      return nullIcon
+  }
 }
 
 const TestNode:React.FC<testNodeProps> = ({testNumber, partCheck}) => {
     const [isOpen, setIsOpen] = useState(false)
-    const progress = Object.values(partCheck).filter(Boolean).length*20
+    
+    const completedCount = partCheck.filter(
+        p => p.status === "COMPLETED"
+    ).length
+
+    const progress = Math.round(
+        (completedCount / partCheck.length) * 100
+    )
     return(
         <div className=" mx-2 py-3 px-20 border-4 border-[#BEB8B8] rounded-xl shadow-xl">
 
@@ -22,15 +41,14 @@ const TestNode:React.FC<testNodeProps> = ({testNumber, partCheck}) => {
                 <p className="font-bold text-3xl">{testNumber}</p>
 
                 <div className="flex gap-2 items-center">
-                    {(Object.entries(partCheck) as [partKey, boolean][]).map(
-                        ([key, value]) => (
-                            <img src={
-                                (value ? trueCheck : (value !== null ? falseCheck : nullIcon ))
-                            } alt={`${key} check img`}
-                            className="w-[40px]"
-                            />
-                        )
-                    )}
+                    {partCheck.map(part => (
+                        <img
+                        key={part.part_id}
+                        src={getStatusIcon(part.status)}
+                        alt={`part${part.part_no} status`}
+                        className="w-[40px]"
+                        />
+                    ))}
                 <p className="ml-2 font-bold text-2xl text-[#064B9D]">{`달성도 ${progress}%`}</p>
                 </div>
 
@@ -46,18 +64,26 @@ const TestNode:React.FC<testNodeProps> = ({testNumber, partCheck}) => {
                 </div>
             </div>
 
-            {isOpen && <div className="flex flex-col gap-2 mt-3">
-                {(Object.entries(partCheck) as [partKey, boolean][]).map(
-                    ([key,value]) => (
-                        <div className="flex items-center justify-between border-b-4 border-b-[#BEB8B8] pb-2 border-opacity-50">
-                            <p className="font-bold text-2xl">{key}</p>
-                            <img src={(value ? trueCheck : (value !== null ? falseCheck : nullIcon ))} alt="checkIcon" 
-                                className="w-[40px]"
-                            />
-                        </div>
-                    )
-                )}
-            </div>}
+            
+            {isOpen && (
+                <div className="flex flex-col gap-2 mt-3">
+                {partCheck.map(part => (
+                    <div
+                    key={part.part_id}
+                    className="flex items-center justify-between border-b-4 border-b-[#BEB8B8] pb-2 border-opacity-50"
+                    >
+                    <p className="font-bold text-2xl">
+                        Part {part.part_no}
+                    </p>
+                    <img
+                        src={getStatusIcon(part.status)}
+                        alt="checkIcon"
+                        className="w-[40px]"
+                    />
+                    </div>
+                ))}
+                </div>
+            )}
         </div>
     )
 }

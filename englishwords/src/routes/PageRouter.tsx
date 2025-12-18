@@ -35,7 +35,7 @@ const PageRouter: React.FC = () => {
       < NavBar isLogin={isLogin} setIsLogin={setIsLogin}/>
       <Routes>
         <Route path="/" element={<HomeRouter/>} />
-        <Route path="/test" element={<TestRouter/>} />
+        <Route path="/test" element={<TestRouter isLogin={isLogin}/>} />
         <Route path="/word" element={<WordRouter/>} />
         <Route path="/template" element={<TemplateRouter/>} />
         <Route path="/login" element={<Authentication setIsLogin={setIsLogin}/>} />

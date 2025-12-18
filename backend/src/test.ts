@@ -81,28 +81,49 @@ router.post("/part", upload.any(), async (req: Request, res: Response) => {
 })
 
 router.get("/reach_test", async (req: Request, res: Response) => {
-    const testId = req.query.testId
+    const userId = req.query.userId
     const conn = await pool.getConnection()
+
     try {
         const result = []
-        const [datas]: any = await conn.query(`
-            SELECT * FROM test_part WHERE test_id = ?
-            `, [testId])
-        for (const data of datas) {
-                const [question] = await conn.query(`
-                    SELECT * FROM test_part_question WHERE part_id = ?
-                `, [data.part_id])
-                const [content] = await conn.query(`
-                    SELECT * FROM test_part_content WHERE part_id = ?
-                `, [data.part_id])
+        const [testIds]: any =  await conn.query(`
+            SELECT test_id FROM test
+        `)
+        for (const test of testIds) {
+            const testId = test.test_id
             
-                result.push({
-                        ...data,
-                        question,
-                        content
-                    })
-                }
-                return res.status(201).json({message: "success", data: {result}})
+                await conn.query(`
+                    INSERT INTO user_test_part_progress (user_id, test_id, part_id, status)
+                    SELECT ?, ?, p.part_id, "NOT_STARTED"
+                    FROM test_part p
+                    WHERE p.test_id = ?
+                        AND NOT EXISTS (
+                            SELECT 1
+                            FROM user_test_part_progress utpp
+                            WHERE utpp.user_id = ?
+                                AND utpp.test_id = ?
+                                AND utpp.part_id = p.part_id
+                        )    
+                `, [userId, testId, testId, userId, testId])
+    
+                const [parts]: any = await conn.query(`
+                    SELECT
+                        p.part_id,
+                        p.part_no,
+                        utpp.status,
+                        utpp.completed_at
+                    FROM test_part p
+                    JOIN user_test_part_progress utpp
+                    ON utpp.part_id = p.part_id
+                    AND utpp.user_id = ?
+                    AND utpp.test_id = ?
+                    WHERE p.test_id = ?
+                    ORDER BY p.part_no
+                    `, [userId, testId, testId])
+
+                result.push({ test_id: testId, parts })
+            }
+            return res.status(201).json({message: "success", data: result})
         } catch (error) {
             console.log(error)
             return res.status(500).json({message: error})

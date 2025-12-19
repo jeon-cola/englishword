@@ -6,7 +6,7 @@ import playIcon from "../../componenets/playIcon.png"
 import nullIcon from "../../componenets/nullIcon.png"
 import { useState } from "react"
 import { PartProgress } from "./Test"
-type partKey = "part1" | "part2" | "part3" | "part4" | "part5"
+import { useNavigate } from "react-router"
 
 interface testNodeProps {
     testNumber: string,
@@ -26,7 +26,8 @@ const getStatusIcon = (status: PartProgress["status"]) => {
 
 const TestNode:React.FC<testNodeProps> = ({testNumber, partCheck}) => {
     const [isOpen, setIsOpen] = useState(false)
-    
+    const nav = useNavigate()
+
     const completedCount = partCheck.filter(
         p => p.status === "COMPLETED"
     ).length
@@ -38,7 +39,7 @@ const TestNode:React.FC<testNodeProps> = ({testNumber, partCheck}) => {
         <div className=" mx-2 py-3 px-20 border-4 border-[#BEB8B8] rounded-xl shadow-xl">
 
             <div className="flex items-center justify-between">
-                <p className="font-bold text-3xl">{testNumber}</p>
+                <p className="font-bold text-3xl">{`문제${testNumber}`}</p>
 
                 <div className="flex gap-2 items-center">
                     {partCheck.map(part => (
@@ -58,7 +59,7 @@ const TestNode:React.FC<testNodeProps> = ({testNumber, partCheck}) => {
                         {!isOpen ? <img src={closeIcon} alt="closeIcon"/> : <img src={openIcon} alt="openIcon"/>}
                     </div>
                     
-                    <div className="w-[45px]">
+                    <div className="w-[45px]" onClick={() => nav(`/test/detail?test=${testNumber}&part=1`)}>
                         <img src={playIcon} alt="playicon" />
                     </div>
                 </div>

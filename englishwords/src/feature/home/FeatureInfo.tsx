@@ -21,7 +21,7 @@ const FeatureInfo: React.FC<FeatureInfoProps> = ({ title, content, image, sort }
   }
 
   return (
-    <div className="flex w-[1000px] gap-6">
+    <div className="flex w-[1100px] gap-6">
       {sort ? (
         <>
           <img

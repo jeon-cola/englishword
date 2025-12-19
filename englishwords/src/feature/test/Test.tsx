@@ -47,7 +47,7 @@ const Test:React.FC<TestProps> = ({isLogin}) => {
           <div className="flex-1 overflow-y-auto">
             <div className="flex flex-col gap-2">
               {testList.map(test => (
-                <TestNode testNumber={`문제${test.test_id}`}  partCheck={test.parts}/>
+                <TestNode testNumber={`${test.test_id}`}  partCheck={test.parts}/>
               ))}
             </div>
           </div>

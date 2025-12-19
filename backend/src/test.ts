@@ -131,4 +131,42 @@ router.get("/reach_test", async (req: Request, res: Response) => {
 
 })
 
+router.get("/start_test", async (req: Request, res: Response) => {
+    const testId = req.query.testId
+    const userId = req.query.userId
+    const part = req.query.part
+    const conn = await pool.getConnection()
+    console.log("------")
+
+
+    try {
+        const [partRows]: any = await conn.query(`
+            SELECT part_id FROM test_part WHERE test_id = ? AND part_no = ?      
+        `, [testId, part])
+
+        if (!partRows.length) return res.status(201).json({message: "part not found"})
+        
+        const partId = partRows[0].part_id
+
+        const [contents]: any = await conn.query(`
+            SELECT content_id, content_type, content, content_order
+            FROM test_part_content
+            WHERE part_id = ?
+            ORDER BY content_order    
+        `, [partId])
+
+        const [questions] = await conn.query(`
+            SELECT question_id, question_text, question_order
+            FROM test_part_question
+            WHERE part_id = ?
+            ORDER BY question_order    
+        `, [partId])
+
+        return res.status(200).json({message: "success", data: {testId, part, contents, questions}})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message: error})
+    }
+})
+
 export default router

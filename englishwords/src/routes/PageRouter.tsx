@@ -34,13 +34,13 @@ const PageRouter: React.FC = () => {
     <div>
       < NavBar isLogin={isLogin} setIsLogin={setIsLogin}/>
       <Routes>
-        <Route path="/" element={<HomeRouter/>} />
-        <Route path="/test" element={<TestRouter isLogin={isLogin}/>} />
-        <Route path="/word" element={<WordRouter/>} />
-        <Route path="/template" element={<TemplateRouter/>} />
-        <Route path="/login" element={<Authentication setIsLogin={setIsLogin}/>} />
-        <Route path="/mypages" element={<MypagesRouter isLogin={isLogin} setIsLogin={setIsLogin}/> }/>
-        <Route path="/create_test" element={<TestCreate/>}/>
+        <Route path="/*" element={<HomeRouter/>} />
+        <Route path="/test/*" element={<TestRouter isLogin={isLogin}/>} />
+        <Route path="/word/*" element={<WordRouter/>} />
+        <Route path="/template/*" element={<TemplateRouter/>} />
+        <Route path="/login/*" element={<Authentication setIsLogin={setIsLogin}/>} />
+        <Route path="/mypages/*" element={<MypagesRouter isLogin={isLogin} setIsLogin={setIsLogin}/> }/>
+        <Route path="/create_test/*" element={<TestCreate/>}/>
       </Routes>
     </div>
   )

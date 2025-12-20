@@ -59,7 +59,7 @@ use sys;
 
 CREATE TABLE user_test_progress (
 	user_test_id bigint auto_increment primary key,
-    user_id bigint not null comment "user id",
+    user_id varchar(100) not null comment "user id",
     test_id bigint not null comment "test id",
     status enum("NOT_STARTED", "IN_PROGRESS", "COMPLETED") default "NOT_STARTED",
     started_at datetime null,
@@ -71,7 +71,7 @@ CREATE TABLE user_test_progress (
 
 CREATE TABLE user_test_part_progress (
 	user_test_part_id bigint auto_increment primary key,
-    user_id bigint not null comment "user id",
+    user_id varchar(100) not null comment "user id",
     test_id bigint not null comment "test_id",
     part_id bigint not null comment "part id",
     status enum("NOT_STARTED", "IN_PROGRESS", "COMPLETED") default "NOT_STARTED",

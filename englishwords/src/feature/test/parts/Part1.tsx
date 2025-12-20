@@ -1,9 +1,6 @@
-import { Content } from "../TestDetail"
+import { PartProps } from "../types"
 import yellow from "../../../componenets/yellow.jpeg"
 
-export interface PartProps {
-    content: Content
-}
 const Part1:React.FC<PartProps> = ({content}) => {
     return(
         <div className="flex flex-col gap-2 mt-5">

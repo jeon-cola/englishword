@@ -3,6 +3,7 @@ import {Router, Request, Response} from "express"
 import nodemailer from "nodemailer"
 import smtpTransport from "nodemailer-smtp-transport"
 import { upload } from "./storage"
+import { connect } from "node:http2"
 
 
 const mailConfig = require("../config/mailConfig.json")
@@ -10,20 +11,23 @@ const router = Router()
 const sessionconfig = require("../config/sessionconfig.json")
 
 router.get("/me", async (req: Request, res: Response) => {
-  console.log("session",req.session)
-  if (!req.session.user) {
-    return res.status(200).json({ isLogin: false})
+  try {
+    if (!req.session.user) {
+      return res.status(200).json({ isLogin: false})
+    }
+    return res.status(200).json({
+      isLogin: true, 
+      user: req.session.user
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({message: error})
   }
-  return res.status(200).json({
-    isLogin: true,
-    user: req.session.user
-  })
 })
 
 
 router.post("/login", async (req: Request, res: Response) => {
   const {id, password} = req.body
-  
   try {
     const [rows]: any =  await pool.query(`SELECT * FROM users WHERE id = ?`, [id])
 
@@ -38,10 +42,16 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(401).json({ message : "비밀번호가 일치하지 않습니다." })
     }
     req.session.regenerate((err) => {
-        if (err) throw err
+        if (err) {
+          console.log(err)
+          return res.status(500).json({message: "session error"})
+        }
         req.session.user = { id: user.id, name: user.name, profile: user.profile_image }
         req.session.save((err) => {
-          if (err) throw err
+          if (err) {
+            console.log(err)
+            return res.status(500).json({message: "session error"})
+          }
           return res.status(200).json({ message: "successful", user: req.session.user})
         })
     })
@@ -53,20 +63,24 @@ router.post("/login", async (req: Request, res: Response) => {
 
 router.post("/signup", async (req: Request, res: Response) => {
   const {id, password, nickname, birthday} = req.body
+  const conn = await pool.getConnection()
   try {
-    const conn = await pool.getConnection()
+    await conn.beginTransaction()
     const profile_image = "http://localhost:8080/uploads/profile.png"
 
     const sql = `INSERT INTO users (id, password, name, birthday, profile_image) VALUES (?, ?, ?, ?, ?)`
     const [result]  = await conn.query(sql, [id, password, nickname, birthday, profile_image])
 
     conn.release()
-    console.log(result)
+    await conn.commit()
     return res.status(201).send("successful")
 
   } catch (error) {
     console.log(error)
+    await conn.rollback()
     return res.status(500).send("Server error")
+  } finally {
+    conn.release()
   }
 })
 
@@ -132,8 +146,8 @@ const sendTempPasswordEmail = async (to : string, tempPassword: string) => {
 
 router.post("/forgot_email", async (req: Request, res: Response) => {
   const email = req.body.email
+  const conn = await pool.getConnection()
   try {
-    const conn = await pool.getConnection()
     const sql = `SELECT * FROM users WHERE id = ?`
     const [result] = await conn.query(sql, [email])
     if ((result as any).length === 0) {
@@ -154,11 +168,13 @@ router.post("/forgot_email", async (req: Request, res: Response) => {
 
 router.post("/change_password", async (req:Request, res: Response) => {
   const {id, password, changePassword } = req.body
+  const conn = await pool.getConnection()
   
   if (!id || !password || !changePassword) return res.status(500).json({message: "필수값이 누락되었습니다"})
 
   try {
-    const conn = await pool.getConnection()
+    await conn.beginTransaction()
+
     const [rows]: any = await conn.query(
       `SELECT * FROM users WHERE id = ?`, [id]
     )
@@ -173,21 +189,27 @@ router.post("/change_password", async (req:Request, res: Response) => {
       await conn.query(
         `UPDATE users SET password = ? WHERE id = ?`, [changePassword, id]
       )
+      await conn.commit()
       return res.status(200).json({ message: "successful" })
     } else {
       return res.status(200).json({message: "비밀번호가 틀립니다."})
     }
   } catch (error) {
     console.log(error)
+    await conn.rollback()
     return res.status(500).json({message: "server error"})
+  } finally {
+    conn.release()
   }
 })
 
 router.post("/change_profile", upload.single('profile'), async (req: Request, res: Response) => {
+  const conn = await pool.getConnection()
   try {
     const { id, nickname } = req.body
-    const conn = await pool.getConnection()
     const profile = req.file ? `http://localhost:8080/uploads/${req.file.filename}` : null
+
+    await conn.beginTransaction()
 
     if (profile) {
       await conn.query(`      
@@ -203,11 +225,15 @@ router.post("/change_profile", upload.single('profile'), async (req: Request, re
           SELECT id, name, profile_image FROM users WHERE id = ?
           `, [id])
     const user = row[0]
+    await conn.commit()
     return res.status(200).json({ message: "successful", data:{nickname: `${user.name}`, profile: `${user.profile_image}`} })
       
   } catch (error) {
-    // console.log(error)
+    console.log(error)
+    await conn.commit()
     return res.status(500).json({message: "server error"})
+  } finally {
+    conn.release()
   }
 })
 

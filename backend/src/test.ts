@@ -7,6 +7,8 @@ const router = Router()
 router.post("/test", async (req : Request, res : Response) => {
     const conn = await pool.getConnection()
     try {
+        await conn.beginTransaction()
+
         const [testResult]: any = await conn.query(`
             INSERT INTO test () VALUES ()
             `)
@@ -21,10 +23,13 @@ router.post("/test", async (req : Request, res : Response) => {
 
         await conn.commit()
 
-        res.status(201).json({message: "success", testId})
+        return res.status(201).json({message: "success", testId})
     } catch (error) {
         console.log(error)
+        await conn.rollback()
         return res.status(500).json({message: error})
+    } finally {
+        conn.release()
     }
 })
 
@@ -36,6 +41,8 @@ router.post("/part", upload.any(), async (req: Request, res: Response) => {
     const conn = await pool.getConnection()
 
     try {
+        await conn.beginTransaction()
+
         for (const part of parts) {
             const [rows]: any = await conn.query(`
                 SELECT part_id FROM test_part
@@ -73,10 +80,14 @@ router.post("/part", upload.any(), async (req: Request, res: Response) => {
         }
 
         await conn.commit()
+
         return res.status(201).json({message: "success", parts})
     } catch (error) {
         console.log(error)
+        await conn.rollback()
         return res.status(500).json({message: error})
+    } finally {
+        conn.release()
     }
 })
 
@@ -85,6 +96,7 @@ router.get("/reach_test", async (req: Request, res: Response) => {
     const conn = await pool.getConnection()
 
     try {
+        await conn.beginTransaction()
         const result = []
         const [testIds]: any =  await conn.query(`
             SELECT test_id FROM test
@@ -123,21 +135,25 @@ router.get("/reach_test", async (req: Request, res: Response) => {
 
                 result.push({ test_id: testId, parts })
             }
+
+            await conn.commit()
+
             return res.status(201).json({message: "success", data: result})
         } catch (error) {
             console.log(error)
+            await conn.rollback()
             return res.status(500).json({message: error})
+    } finally {
+        conn.release()
     }
 
 })
 
-router.get("/start_test", async (req: Request, res: Response) => {
+router.get("/content_list", async (req: Request, res: Response) => {
     const testId = req.query.testId
     const userId = req.query.userId
     const part = req.query.part
     const conn = await pool.getConnection()
-    console.log("------")
-
 
     try {
         const [partRows]: any = await conn.query(`
@@ -166,6 +182,8 @@ router.get("/start_test", async (req: Request, res: Response) => {
     } catch (error) {
         console.log(error)
         return res.status(500).json({message: error})
+    } finally {
+        conn.release()
     }
 })
 

@@ -73,11 +73,11 @@ const TestCreate:React.FC = () => {
                     },
                     { 
                     part_no: 5,
-                    questions: [ { text: part5Q.current?.value, order: 1 } ],
-                    options: [
-                        part5O1.current?.value,
-                        part5O2.current?.value,
-                        part5O3.current?.value
+                    contents: [ { type:"TEXT", content: part5Q.current?.value, order: 1 } ],
+                    questions: [
+                        {text: part5O1.current?.value, order: 1},
+                        {text: part5O2.current?.value, order: 2},
+                        {text: part5O3.current?.value, order: 3}
                     ]
                     }
                 ])

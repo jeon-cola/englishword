@@ -1,4 +1,4 @@
-import { PartProps } from "./Part1"
+import { PartProps } from "../types"
 
 const Part2:React.FC<PartProps> = ({content}) => {
     return(

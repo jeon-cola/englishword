@@ -1,42 +1,34 @@
 import { useSearchParams } from "react-router"
 import bg from "../../componenets/background.png"
 import white from "../../componenets/white.webp"
-import yellow from "../../componenets/yellow.jpg"
 import { useEffect, useState } from "react"
 import axios from "../../libs/axios"
 import { TestProps } from "../../routes/TestRouter"
+import { Content, Question } from "./types"
 import Part1 from "./parts/Part1"
 import Part2 from "./parts/Part2"
 import Part3 from "./parts/Part3"
 import Part4 from "./parts/Part4"
 import Part5 from "./parts/Part5"
 
-export interface Content {
-    content_id: number,
-    content_type: "TEXT" | "IMAGE",
-    content: string,
-    content_order: number
-}
-
 const TestDetail:React.FC<TestProps> = ({isLogin}) => {
     const [searchParams] = useSearchParams()
     const testId = searchParams.get("test")
-    const [part, setPart] = useState(searchParams.get("part"))
-    const question = []
+    const [part, setPart] = useState<string>(searchParams.get("part") ?? "0")
     const [contents, setContents] = useState<Content[]>([])
+    const [questions, setQuestions] = useState<Question[]>([])
 
     useEffect(()=> {
         const fetchData = async () => {
             try {
-                await axios.get("http://localhost:8080/api/create_test/start_test", {params: {testId: testId, userId: isLogin.id, part: part}})
+                await axios.get("http://localhost:8080/api/create_test/content_list", {params: {testId: testId, userId: isLogin.id, part: part}})
                 .then((res) => {
                     const result = res.data.message
                     if (result === "success") {
                         const data = res.data.data
-                        console.log(res.data.data)
-                        setPart(data.part)
+                        console.log(data)
+                        setQuestions(data.questions)
                         setContents(data.contents)
-                        console.log(part)
                     }
                 })
             } catch (error) {
@@ -59,15 +51,15 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
                 ))
             case "3" :
                 return contents.map(c => (
-                    <Part3 content={c}/>
+                    <Part3 content={c} questions={questions}/>
                 ))
             case "4" :
                 return contents.map(c => (
-                    <Part4 content={c}/>
+                    <Part4 content={c} questions={questions}/>
                 ))
             case "5" :
                 return contents.map(c => (
-                    <Part5 content={c}/>
+                     <Part5 content={c} questions={questions}/>
                 ))
             default: 
                 return null

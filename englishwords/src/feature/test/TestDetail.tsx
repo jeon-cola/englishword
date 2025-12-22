@@ -10,6 +10,8 @@ import Part2 from "./parts/Part2"
 import Part3 from "./parts/Part3"
 import Part4 from "./parts/Part4"
 import Part5 from "./parts/Part5"
+import partNext from "../../componenets/partNext.png"
+import partPre from "../../componenets/partPre.png"
 
 const TestDetail:React.FC<TestProps> = ({isLogin}) => {
     const [searchParams] = useSearchParams()
@@ -111,12 +113,34 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
             style={{backgroundImage: `url(${white})`}}>
             
             <div className="flex flex-col h-full">
-                <div className="flex flex-col gap-3 text-left px-10 py-5 text-xl overflow-y-auto">
+                <div className="flex-1 flex flex-col gap-3 text-left px-10 py-5 text-xl overflow-y-auto">
                     <p className="font-bold text-3xl">문제{testId}</p>
                     <p className="font-bold text-xl">Part{part}</p>
                     {renderIntro()}
                     {renderPart()}
                 </div>
+                
+                    <div className="h-[110px] px-10 flex items-center justify-between border-t border-gray-300">
+                        <img src={partPre} alt="partPre" 
+                            className={`w-[80px] h-[80px] ${(part !== "1") ? "cursor-pointer" : "opacity-65 cursor-not-allowed"}`}
+                            onClick={() => {
+                                const num = Number(part)
+                                if (num > 1) {
+                                    setPart(String(num -1))
+                                }
+                            }}
+                        />
+                        <img src={partNext} alt="partNext" 
+                            className={`w-[80px] h-[80px] ${(part !== "5") ? "cursor-pointer" : "opacity-65 cursor-not-allowed"}`}
+                            onClick={() => {
+                                const num = Number(part)
+                                if (num < 5) {
+                                    setPart(String(num +1))
+                                }
+                            }}
+                        />
+                    </div>
+
             </div>
 
             </div>

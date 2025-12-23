@@ -56,11 +56,11 @@ const TestNode:React.FC<testNodeProps> = ({testNumber, partCheck}) => {
             
                 <div className="flex gap-2">
                     <div className="w-[45px] flex" onClick={() => {setIsOpen(!isOpen)}}>
-                        {!isOpen ? <img src={closeIcon} alt="closeIcon"/> : <img src={openIcon} alt="openIcon"/>}
+                        {!isOpen ? <img src={closeIcon} alt="closeIcon" className="cursor-pointer"/> : <img src={openIcon} alt="openIcon" className="cursor-pointer"/>}
                     </div>
                     
                     <div className="w-[45px]" onClick={() => nav(`/test/detail?test=${testNumber}&part=1`)}>
-                        <img src={playIcon} alt="playicon" />
+                        <img src={playIcon} alt="playicon" className="cursor-pointer"/>
                     </div>
                 </div>
             </div>

@@ -12,6 +12,8 @@ import Part4 from "./parts/Part4"
 import Part5 from "./parts/Part5"
 import partNext from "../../componenets/partNext.png"
 import partPre from "../../componenets/partPre.png"
+import { useSpeechSynthesis } from "../../hooks/useSpeechSynthesis"
+import { renderIntro, introTextMap } from "./Intro"
 
 const TestDetail:React.FC<TestProps> = ({isLogin}) => {
     const [searchParams] = useSearchParams()
@@ -19,6 +21,7 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
     const [part, setPart] = useState<string>(searchParams.get("part") ?? "0")
     const [contents, setContents] = useState<Content[]>([])
     const [questions, setQuestions] = useState<Question[]>([])
+    const {speak} = useSpeechSynthesis()
 
     useEffect(()=> {
         const fetchData = async () => {
@@ -39,7 +42,13 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
             }
         }
         fetchData()
+        const text = introTextMap[part]
+        if (text) {
+            speak(text.join(" "))
+        }
     },[part])
+
+
 
     const renderPart = () => {
         switch (part) {
@@ -68,42 +77,6 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
         }
     }
 
-        const renderIntro = () => {
-        switch (part) {
-            case "1" :
-                return (<div className="text-xl px-3">
-                    <p>In this part of test, you will read aloud the text on the screen.</p>
-                    <p>You will have 45 seconds to prepare.</p>
-                    <p>Then you will have 45 seconds to read the text aloud</p>
-                </div>)
-            case "2" :
-                return (<div className="text-xl px-3">
-                        <p>In this part of the test, you will describe the picture on your screen in as much detail as you can.</p>
-                        <p>You will have 45 seconds to prepare your response.</p>
-                        <p>Then you will have 30 seconds to speak about the picture.</p>
-                    </div>)
-            case "3" : return (<div className="text-xl px-3">
-                        <p>In this part of the test, you will answer three questions.</p>
-                        <p>You will have three seconds to prepare after you hear each question.</p>
-                        <p>You will have 15 seconds to response to Question 1 and 2, and 30 seconds to respond to Question3</p>
-                    </div>)
-            case "4" : return(<div className="text-xl px-3">
-                        <p>In this part of the test, you will answer three questions based on the information provided.</p>
-                        <p>You will have 45 seconds to read the information before the questions begin.</p>
-                        <p>You will have three seconds to prepare and 15 seconds to respond to Questions 1 and 2.</p>
-                        <p>You will hear Question 3 two times.</p>
-                        <p>You will have three seconds to prepare and 30 seconds to respond to Question 3.</p>
-                    </div>)
-            case "5" : return(<div className="text-xl px-3">
-                        <p>In this part of the test, you will give your opinion about a specific topic.</p>
-                        <p>Be sure to say as much as you can in the time allowed.</p>
-                        <p>You will have 45 seconds to prepare.</p>
-                        <p>Then you will have 60 seconds to speak.</p>
-                    </div>)
-            default: 
-                return null
-        }
-    }
     return(
         <div 
             className="absolute inset-0 bg-cover bg-top bg-no-repeat flex justify-center"
@@ -111,12 +84,12 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
         >
             <div className="mt-16 h-[835px] w-2/3 bg-cover rounded-xl shadow-xl"
             style={{backgroundImage: `url(${white})`}}>
-            
+
             <div className="flex flex-col h-full">
                 <div className="flex-1 flex flex-col gap-3 text-left px-10 py-5 text-xl overflow-y-auto">
                     <p className="font-bold text-3xl">문제{testId}</p>
                     <p className="font-bold text-xl">Part{part}</p>
-                    {renderIntro()}
+                    {renderIntro(part)}
                     {renderPart()}
                 </div>
                 

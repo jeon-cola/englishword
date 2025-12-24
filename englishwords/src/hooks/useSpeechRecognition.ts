@@ -27,6 +27,7 @@ export const useSpeechRecognition = (
         recognition.interimResults = true
 
         recognition.onresult = (e: any) => {
+            console.log(e)
             let finalText = ""
             for (let i = e.resultIndex; i < e.results.length; i++) {
                 if (e.results[i].isFinal) {

@@ -1,16 +1,20 @@
 import { PartProps } from "../types"
 import yellow from "../../../componenets/yellow.jpeg"
 import { useSpeechRecognition } from "../../../hooks/useSpeechRecognition"
+import { useSpeechSynthesis } from "../../../hooks/useSpeechSynthesis"
 
 
 
 const Part1:React.FC<PartProps> = ({content}) => {
     const { answer, recording, recordingHandler } = useSpeechRecognition({lang: "en-US"})
-
+    const {speak} = useSpeechSynthesis()
     return(
         <div className="flex flex-col gap-2 mt-5 border-t-2 border-gray-300 p-2">
             <p className="font-bold">Question {content.content_order}</p>
-            <div className="p-5 rounded-xl" style={{backgroundImage: `url(${yellow})`}}>
+            <div className="p-5 rounded-xl cursor-pointer" 
+                style={{backgroundImage: `url(${yellow})`}}
+                onClick={()=> {speak(content.content)}}
+            >
                 <p>{content.content}</p>
             </div>
 

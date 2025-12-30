@@ -43,6 +43,10 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
         fetchData()
         const text = introTextMap[part]
         if (text) speak(text.join(" "))
+
+        return () => {
+            window.speechSynthesis.cancel()
+        }
     },[part])
 
 

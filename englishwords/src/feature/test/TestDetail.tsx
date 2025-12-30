@@ -31,7 +31,6 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
                     const result = res.data.message
                     if (result === "success") {
                         const data = res.data.data
-                        console.log(data)
                         setQuestions(data.questions)
                         setContents(data.contents)
                     }
@@ -43,9 +42,7 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
         }
         fetchData()
         const text = introTextMap[part]
-        if (text) {
-            speak(text.join(" "))
-        }
+        if (text) speak(text.join(" "))
     },[part])
 
 

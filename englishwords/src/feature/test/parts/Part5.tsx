@@ -2,10 +2,18 @@ import { PartProps } from "../types"
 import yellow from "../../../componenets/yellow.jpeg"
 import { useSpeechRecognition } from "../../../hooks/useSpeechRecognition"
 import { useSpeechSynthesis } from "../../../hooks/useSpeechSynthesis"
+import { useTimer } from "../../../hooks/useTimer"
+import { useEffect } from "react"
 
-const Part5:React.FC<PartProps> = ({ content, questions}) => { 
+const Part5:React.FC<PartProps> = ({ content, questions, onComplete}) => { 
     const {answer, recording, recordingHandler} = useSpeechRecognition({lang: "en-US"})
     const {speak} = useSpeechSynthesis()
+    const time = useTimer({recording})
+
+    useEffect(() => {
+        if (answer) onComplete(content.content_order, answer)
+    },[answer])
+
     return (
         <div className="mt-5 flex flex-col gap-2 border-t-2 border-gray-300 p-2">
             <p className="font-bold text-xl">Question</p>
@@ -36,6 +44,10 @@ const Part5:React.FC<PartProps> = ({ content, questions}) => {
             >
                 <p>{recording ? "Recording..." : answer || "Click to speak"}</p>
             </div>
+
+            <div className={`self-center text-2xl font-bold transition duration-300 ${time < 50 ? "text-black" : time < 60 ? "text-yellow-500" : recording ? "text-red-500 animate-pulse": "text-red-500 "}`}>
+                {time > 0 && `Time : ${time}s`}
+             </div>
         </div>
     )
 }

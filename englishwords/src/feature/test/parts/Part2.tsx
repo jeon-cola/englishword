@@ -2,10 +2,16 @@ import { PartProps } from "../types"
 import { useSpeechRecognition } from "../../../hooks/useSpeechRecognition"
 import yellow from "../../../componenets/yellow.jpeg"
 import { useTimer } from "../../../hooks/useTimer"
+import { useEffect } from "react"
 
-const Part2:React.FC<PartProps> = ({content}) => {
+const Part2:React.FC<PartProps> = ({content, onComplete}) => {
     const {answer, recording, recordingHandler } = useSpeechRecognition({lang: "en-US"})
     const time = useTimer({recording})
+
+    useEffect(() => {
+        if (answer) onComplete(content.content_order, answer)
+    },[answer])
+
     return(
         <div className="flex flex-col  gap-2 text-left mt-5 border-t-2 border-gray-300 p-2">
             <p className="font-bold">Question{content.content_order}</p>

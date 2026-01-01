@@ -13,5 +13,6 @@ export interface Question {
 
 export interface PartProps {
     content: Content,
-    questions?: Question[]
+    questions?: Question[],
+    onComplete: (order: number, answer: string) => void
 }

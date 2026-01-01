@@ -4,6 +4,7 @@ import white from "../../componenets/white.webp"
 import axios from "../../libs/axios"
 import { TestProps } from "../../routes/TestRouter"
 import TestNode from "./TestNode"
+import { useNavigate } from "react-router"
 
 export interface PartProgress {
   part_id: number,
@@ -20,8 +21,16 @@ export interface TestProgress {
 // 테스트 컴포넌트
 const Test:React.FC<TestProps> = ({isLogin}) => {
   const [testList, setTestList] = useState<TestProgress[]>([])
+  const nav = useNavigate()
 
   useEffect(() => {
+    console.log(isLogin)
+    if (isLogin.id === "") {
+      nav("/login")
+      return 
+
+    }
+
     const data = async () => {
       await axios.get("http://localhost:8080/api/create_test/reach_test",{params: {userId: isLogin.id}})
       .then((res) => {
@@ -32,7 +41,7 @@ const Test:React.FC<TestProps> = ({isLogin}) => {
       })
     }
     data()
-  },[isLogin?.id])
+  },[isLogin])
   return (
     <div 
       className="absolute inset-0 bg-cover bg-top bg-no-repeat flex justify-center"

@@ -2,6 +2,7 @@ import { PartProps } from "../types"
 import yellow from "../../../componenets/yellow.jpeg"
 import { useSpeechSynthesis } from "../../../hooks/useSpeechSynthesis"
 import PartQuestion from "./PartQuestion"
+import { useEffect } from "react"
 
 const Part3:React.FC<PartProps> = ({content, questions, onComplete}) => {
     const {speak} = useSpeechSynthesis()

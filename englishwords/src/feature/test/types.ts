@@ -17,5 +17,11 @@ export interface PartProps {
     content: Content,
     questions?: Question[],
     onComplete: (order: number, answer: string) => void,
-    setRecordAnswer: React.Dispatch<React.SetStateAction<Record<string, Record<number, string>>>>
+}
+
+
+export interface PartQuestionProps {
+    question: Question,
+    content: Content,
+    onComplete: (order: number, answer: string) => void,
 }

@@ -23,11 +23,13 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
     const [questions, setQuestions] = useState<Question[]>([])
     const {speak} = useSpeechSynthesis()
 
-    const [recordAnswer, setRecordAnswer] = useState<Record<string, Record<number, string>>>({})
-
-    const answerHandler = async () => {
+    const answerHandler = async (num: number) => {
         try {
-            
+            await axios.post("", {user: isLogin.id, testId: testId, part: part})
+            .then((res) => {
+                const data = res.data.data
+                if (data === "success") setPart(String(num +1))
+            })
         } catch (error) {
             console.log(error)
             alert("서버 에러!! 잠시후 다시 시도해주세요")
@@ -84,23 +86,23 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
         switch (part) {
             case "1" :
                 return (contents.map(c => (
-                    <Part1 content={c} onComplete={(order, answer) => completeHandler(Number(part), order, answer)} setRecordAnswer={setRecordAnswer} />)
+                    <Part1 content={c} onComplete={(order, answer) => completeHandler(Number(part), order, answer)}  />)
                 ))
             case "2" :
                 return contents.map(c => (
-                    <Part2 content={c} onComplete={(order, answer) => completeHandler(Number(part), order, answer)} setRecordAnswer={setRecordAnswer}/>
+                    <Part2 content={c} onComplete={(order, answer) => completeHandler(Number(part), order, answer)} />
                 ))
             case "3" :
                 return contents.map(c => (
-                    <Part3 content={c} questions={questions} onComplete={(order, answer) => completeHandler(Number(part), order, answer)} setRecordAnswer={setRecordAnswer}/>
+                    <Part3 content={c} questions={questions} onComplete={(order, answer) => completeHandler(Number(part), order, answer)} />
                 ))
             case "4" :
                 return contents.map(c => (
-                    <Part4 content={c} questions={questions} onComplete={(order, answer) => completeHandler(Number(part), order, answer)} setRecordAnswer={setRecordAnswer}/>
+                    <Part4 content={c} questions={questions} onComplete={(order, answer) => completeHandler(Number(part), order, answer)} />
                 ))
             case "5" :
                 return contents.map(c => (
-                     <Part5 content={c} questions={questions} onComplete={(order, answer) => completeHandler(Number(part), order, answer)} setRecordAnswer={setRecordAnswer}/>
+                     <Part5 content={c} questions={questions} onComplete={(order, answer) => completeHandler(Number(part), order, answer)} />
                 ))
             default: 
                 return null
@@ -140,8 +142,7 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
                                 if (num < 5) {
                                     const allDone = Object.values(complete[num]).every(v => v.length > 0)
                                     if (!allDone) return alert("답변을 완료해주셔야 다음으로 넘어갈 수 있습니다")
-                                    answerHandler()
-                                    setPart(String(num +1))
+                                    answerHandler(num)
                                 }
                             }}
                         />

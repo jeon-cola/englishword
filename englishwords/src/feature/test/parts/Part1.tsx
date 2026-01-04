@@ -7,20 +7,13 @@ import { useEffect } from "react"
 
 
 
-const Part1:React.FC<PartProps> = ({content, onComplete, setRecordAnswer}) => {
+const Part1:React.FC<PartProps> = ({content, onComplete}) => {
     const { answer, recording, recordingHandler } = useSpeechRecognition({lang: "en-US"})
     const {speak} = useSpeechSynthesis()
     const time = useTimer({recording})
 
     useEffect(() => {
         if (answer) onComplete(content.content_order, answer)
-        setRecordAnswer(prev => ({
-            ...prev,
-            "part1": {
-                ...(prev.part1 ?? {}),
-                [content.content_order]: answer
-            }
-        }))
     },[answer])
 
     return(

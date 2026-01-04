@@ -4,19 +4,12 @@ import yellow from "../../../componenets/yellow.jpeg"
 import { useTimer } from "../../../hooks/useTimer"
 import { useEffect } from "react"
 
-const Part2:React.FC<PartProps> = ({content, onComplete, setRecordAnswer}) => {
+const Part2:React.FC<PartProps> = ({content, onComplete}) => {
     const {answer, recording, recordingHandler } = useSpeechRecognition({lang: "en-US"})
     const time = useTimer({recording})
 
     useEffect(() => {
         if (answer) onComplete(content.content_order, answer)
-        setRecordAnswer(prev => ({
-            ...prev,
-            "part2": {
-                ...(prev.part2 ?? {}),
-                [content.content_order]: answer
-            }
-        }))
     },[answer])
 
     return(

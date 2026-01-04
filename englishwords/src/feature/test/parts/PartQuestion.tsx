@@ -3,13 +3,8 @@ import yellow from "../../../componenets/yellow.jpeg"
 import { useSpeechRecognition } from "../../../hooks/useSpeechRecognition"
 import { useSpeechSynthesis } from "../../../hooks/useSpeechSynthesis"
 import { useTimer } from "../../../hooks/useTimer"
-import { Question, Content } from "../types"
+import { PartQuestionProps } from "../types"
 
-interface PartQuestionProps {
-    question: Question,
-    content: Content,
-    onComplete: (order: number, answer: string) => void
-}
 
 const PartQuestion:React.FC<PartQuestionProps> = ({question, content ,onComplete }) => {
     const {answer, recording, recordingHandler} = useSpeechRecognition({lang: "en-US"})

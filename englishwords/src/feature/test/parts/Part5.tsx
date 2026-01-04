@@ -5,13 +5,20 @@ import { useSpeechSynthesis } from "../../../hooks/useSpeechSynthesis"
 import { useTimer } from "../../../hooks/useTimer"
 import { useEffect } from "react"
 
-const Part5:React.FC<PartProps> = ({ content, questions, onComplete}) => { 
+const Part5:React.FC<PartProps> = ({ content, questions, onComplete, setRecordAnswer}) => { 
     const {answer, recording, recordingHandler} = useSpeechRecognition({lang: "en-US"})
     const {speak} = useSpeechSynthesis()
     const time = useTimer({recording})
 
     useEffect(() => {
         if (answer) onComplete(content.content_order, answer)
+        setRecordAnswer(prev => ({
+            ...prev,
+            "part5": {
+                ...(prev.part5 ?? {}),
+                [content.content_order]: answer
+            }
+        }))
     },[answer])
 
     return (

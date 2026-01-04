@@ -1,3 +1,5 @@
+import React from "react"
+
 export interface Content {
     content_id: number,
     content_type: "TEXT" | "IMAGE",
@@ -14,5 +16,6 @@ export interface Question {
 export interface PartProps {
     content: Content,
     questions?: Question[],
-    onComplete: (order: number, answer: string) => void
+    onComplete: (order: number, answer: string) => void,
+    setRecordAnswer: React.Dispatch<React.SetStateAction<Record<string, Record<number, string>>>>
 }

@@ -19,15 +19,16 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
     const [searchParams] = useSearchParams()
     const testId = searchParams.get("test")
     const [part, setPart] = useState<string>(searchParams.get("part") ?? "0")
+    const [partId, setPartId] = useState(0)
     const [contents, setContents] = useState<Content[]>([])
     const [questions, setQuestions] = useState<Question[]>([])
     const {speak} = useSpeechSynthesis()
 
     const answerHandler = async (num: number) => {
         try {
-            await axios.post("", {user: isLogin.id, testId: testId, part: part})
+            await axios.post("http://localhost:8080/api/create_test/part_check", {user: isLogin.id, testId: testId, part: part, partId: partId})
             .then((res) => {
-                const data = res.data.data
+                const data = res.data.message
                 if (data === "success") setPart(String(num +1))
             })
         } catch (error) {
@@ -64,6 +65,7 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
                         const data = res.data.data
                         setQuestions(data.questions)
                         setContents(data.contents)
+                        setPartId(data.partId)
                     }
                 })
             } catch (error) {

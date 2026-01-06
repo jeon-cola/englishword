@@ -178,10 +178,68 @@ router.get("/content_list", async (req: Request, res: Response) => {
             ORDER BY question_order    
         `, [partId])
 
-        return res.status(200).json({message: "success", data: {testId, part, contents, questions}})
+        return res.status(200).json({message: "success", data: {testId, part, partId,contents, questions}})
     } catch (error) {
         console.log(error)
         return res.status(500).json({message: error})
+    } finally {
+        conn.release()
+    }
+})
+
+router.post("/part_check", async (req: Request, res: Response) => {
+    const userId = req.body.user
+    const testId = req.body.testId
+    const partId = req.body.partId
+    const part = Number(req.body.part)
+    const conn = await pool.getConnection()
+
+    try {
+        await conn.beginTransaction()
+
+        await conn.query(`
+            UPDATE user_test_part_progress SET status = "COMPLETED", completed_at = NOW()
+            WHERE user_id = ? AND test_id = ? AND part_id = ?
+        `,[userId, testId, partId])
+
+        switch (part) {
+            case 1:
+                await conn.query(`
+                    UPDATE user_test_progress
+                    SET status = "IN_PROGRESS", started_at = IFNULL(started_at, NOW())
+                    WHERE user_id = ? AND test_id = ? AND status = "NOT_STARTED"
+                `,[userId, testId])             
+                break
+            case 5:
+                const [[remain]]: any = await conn.query(`
+                    SELECT COUNT(*) AS remain
+                    FROM user_test_part_progress
+                    WHERE user_id = ? AND test_id = ? AND status != "COMPLETED"
+                `,[userId, testId])
+
+                if (remain.remain === 0 ) {
+                    await conn.query(`
+                        UPDATE user_test_progress
+                        SET status = "COMPLETED", completed_at = NOW()
+                        WHERE user_id = ? AND test_id = ?
+                    `,[userId, testId])
+                }
+                break
+        }
+        if (part < 5) {
+            await conn.query(`
+                UPDATE user_test_part_progress
+                SET status = "IN_PROGRESS"
+                WHERE user_id = ? AND test_id = ? AND part_id = (SELECT part_id FROM test_part WHERE test_id = ? AND part_no = ?) AND status = "NOT_STARTED"
+            `,[userId, testId, testId, part+1])
+        }
+
+        await conn.commit()
+        res.status(201).json({message: "success"})
+    } catch (error) {
+        console.log(error)
+        await conn.rollback()
+        res.status(500).json({message: "server error"})
     } finally {
         conn.release()
     }

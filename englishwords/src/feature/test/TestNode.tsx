@@ -28,6 +28,8 @@ const TestNode:React.FC<testNodeProps> = ({testNumber, partCheck}) => {
     const [isOpen, setIsOpen] = useState(false)
     const nav = useNavigate()
 
+    console.log(partCheck)
+
     const completedCount = partCheck.filter(
         p => p.status === "COMPLETED"
     ).length

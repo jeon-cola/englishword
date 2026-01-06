@@ -38,7 +38,9 @@ const TestNode:React.FC<testNodeProps> = ({testNumber, partCheck}) => {
         (completedCount / partCheck.length) * 100
     )
     return(
-        <div className=" mx-2 py-3 px-20 border-4 border-[#BEB8B8] rounded-xl shadow-xl">
+        <div className=" 
+            mx-2 py-3 px-20 border-4 border-[#BEB8B8] rounded-xl shadow-xl transition-transform duration-950 ease-out
+            hover:scale-[1.01] hover:shadow-lg">
 
             <div className="flex items-center justify-between">
                 <p className="font-bold text-3xl">{`문제${testNumber}`}</p>

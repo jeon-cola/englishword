@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router"
+import { useNavigate, useSearchParams } from "react-router"
 import bg from "../../componenets/background.png"
 import white from "../../componenets/white.webp"
 import { useEffect, useState } from "react"
@@ -16,6 +16,7 @@ import { useSpeechSynthesis } from "../../hooks/useSpeechSynthesis"
 import { renderIntro, introTextMap } from "./Intro"
 
 const TestDetail:React.FC<TestProps> = ({isLogin}) => {
+    const nav = useNavigate()
     const [searchParams] = useSearchParams()
     const testId = searchParams.get("test")
     const [part, setPart] = useState<string>(searchParams.get("part") ?? "0")
@@ -138,13 +139,17 @@ const TestDetail:React.FC<TestProps> = ({isLogin}) => {
                             }}
                         />
                         <img src={partNext} alt="partNext" 
-                            className={`w-[80px] h-[80px] ${(part !== "5") ? "cursor-pointer" : "opacity-65 cursor-not-allowed"}`}
+                            className="w-[80px] h-[80px] cursor-pointer"
                             onClick={() => {
                                 const num = Number(part)
-                                if (num < 5) {
+                                if (num <= 5) {
                                     const allDone = Object.values(complete[num]).every(v => v.length > 0)
                                     if (!allDone) return alert("답변을 완료해주셔야 다음으로 넘어갈 수 있습니다")
                                     answerHandler(num)
+                                    if (num === 5) {
+                                        alert("test가 완료되었습니다.")
+                                        nav("/test")
+                                    }
                                 }
                             }}
                         />
